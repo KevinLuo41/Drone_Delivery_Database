@@ -2,27 +2,26 @@
 <html>
 
 <head>
-  <title>Admin|Create Grocery Chain</title>
+    <title>Admin|Create Grocery Chain</title>
 </head>
 
 <body>
 
-  <h1>Admin Create Grocery Chain</h1>
+<h1>Admin Create Grocery Chain</h1>
 
-  <form>
-    <div>
-      <label for="chain-name">Grocery Chain Name:</label>
-      <input type="text" name="chain-name" id="chain-name" placeholder="chain name" required />
-    </div>
+<div>
+    <form action="/create_chain_back" method="POST">
+        <label for="chain-name">Grocery Chain Name:</label>
+        <input type="text" name="chain-name" id="chain-name" placeholder="chain name" required/>
 
-    <div>
-      <input type="submit" value="Create" />
-    </div>
-  </form>
+        <input type="submit" value="Create"/>
+    </form>
+</div>
 
-  <div>
+
+<div>
     <a href="/admin_home"> Back </a>
-  </div>
+</div>
 </body>
 
 </html>
