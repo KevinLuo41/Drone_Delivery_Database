@@ -1,6 +1,6 @@
 from flask import Flask
 from datetime import timedelta
-from backend import backend_api, db
+from backend import backend_api,db
 from frontend import frontend_api
 
 
@@ -12,6 +12,8 @@ app.config['MYSQL_DATABASE_PASSWORD'] = 'kevin112911/'
 app.config['MYSQL_DATABASE_DB'] = 'grocery_drone_delivery'
 app.config['MYSQL_DATABASE_HOST'] = 'localhost'
 app.config['MYSQL_DATABASE_PORT'] = 3306
+app.secret_key = 'kevin'
+
 db.init_app(app)
 
 app.register_blueprint(backend_api)
