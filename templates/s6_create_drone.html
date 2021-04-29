@@ -5,93 +5,105 @@
     <title>Admin Create Drone</title>
 </head>
 
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-<script>window.jQuery || document.write('<script src="{{url_for('static', filename='jquery.js') }}">\x3C/script>')</script>
+<script src="/static/jquery.js"></script>
 
 <body>
 
 <h1>Admin Create Drone</h1>
 
 
-<form action="/Admin Create Drone" method="POST">
+<form action="/s6_create_drone_back" id="drone-info" method="POST">
 
     <div>
-        <label for="Drone ID">Drone ID</label>
-        <input type="text" name="Drone ID" id="Drone ID" value={{id}} readonly/>
+        <label for="drone-id">Drone ID</label>
+        <input type="text" name="drone-id" id="drone-id" value={{ id }} readonly/>
     </div>
     <div>
-        <label for="Affiliated Grocery Code">Affiliated Grocery Code:</label>
-        <select name="Affiliated Grocery Code" id="Affiliated Grocery Code">
+        <label for="zipcode">Affiliated Grocery Code:</label>
+        <select name="zipcode" id="zipcode">
             <option value="0" selected disabled>zipcode</option>
             {% for zip in ziplist %}
-            <option value="{{zip}}">{{zip}}</option>
+                <option value="{{ zip }}">{{ zip }}</option>
             {% endfor %}
 
         </select>
     </div>
     <div>
-        <label for="Travel Radius"> Travel Radius:</label>
-        <input type="text" name="Travel Radius" id="Travel Radius" required/>
+        <label for="radius"> Travel Radius:</label>
+        <input type="text" name="radius" id="radius" required/>
     </div>
 
 
     <div>
-        <label for="Status">Status:</label>
-        <select name="Status" id="Status">
+        <label for="status">Status:</label>
+        <select name="status" id="status">
             <option value="0" selected disabled>Available</option>
 
         </select>
     </div>
 
     <div>
-        <label for="Store Associate">Store Associate:</label>
-        <select name="Store Associate" id="Store Associate">
+        <label for="tech">Store Associate:</label>
+        <select name="tech" id="tech">
             <option value="0" selected disabled>Employee</option>
         </select>
 
     </div>
 </form>
+
 <script charset="utf-8" type="text/javascript">
     $(function () {
+
         var dropdown = {
-            ziplist: $('#Affiliated Grocery Code')
+            ziplist: $('#zipcode'),
+            employee: $('#tech')
         };
+        console.log(dropdown);
 
         // function to call XHR and update goodsrec dropdown
         function getemployee() {
-            var zipcode = dropdown.ziplist.val();
+            var zip = dropdown.ziplist.val();
+            dropdown.ziplist.attr('disabled');
             console.log(zipcode);
-            dropdown["Store Associate"].attr('disabled', 'disabled');
 
-            if (customer !== "zipcode") {
-                $.getJSON("{{ url_for('backend_api.s6_front_helper2') }}", {ziplist: zipcode}, function (data) {
+            if (zip !== "zipcode") {
+                dropdown.employee.empty().append(
+                    $('<option>', {
+                        value: "0",
+                        text: "Employee",
+                        disabled: "disabled"
+                    })
+                );
+
+                $.post("{{ url_for('backend_api.s6_front_helper2') }}", {ziplist: zip}, function (data) {
                     console.log(data);
                     data.forEach(function (item) {
-                        dropdown.["Store Associate"].append(
+                        dropdown.employee.append(
                             $('<option>', {
                                 value: item.username,
                                 text: item.username
                             })
                         );
                     });
-                    dropdown["Store Associate"].removeAttr('disabled');
+                    dropdown.employee.removeAttr('disabled');
                 });
             }
         }
 
         // event listener to customer dropdown change
-        dropdown.customer.on('change', function () {
-            updateGoodsrec();
+        dropdown.ziplist.on('change', function () {
+            console.log(dropdown);
+            getemployee();
         });
 
     });
 </script>
 
 
-<div>
+<form action="/s3_home_admin">
     <input type="submit" value="Back"/>
-    <input type="submit" value="Create"/>
-</div>
+    <input type="submit" form = "drone-info" value="Create"/>
+</form>
 </body>
 
 </html>

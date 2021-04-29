@@ -2,7 +2,12 @@ from flask import Flask
 from datetime import timedelta
 from backend import backend_api,db
 from frontend import frontend_api
+import os
 
+abspath = os.path.abspath(__file__)
+dname = os.path.dirname(abspath)
+os.chdir(dname)
+print(os.getcwd())
 
 app = Flask(__name__)
 app.config["SEND_FILE_MAX_AGE_DEFAULT"] = timedelta(seconds=1)

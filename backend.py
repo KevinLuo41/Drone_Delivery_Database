@@ -1,6 +1,6 @@
 from flask import Blueprint, request, Response, redirect, jsonify, url_for, flash
 from flaskext.mysql import MySQL
-import json
+import os
 
 db = MySQL()
 backend_api = Blueprint('backend_api', __name__)
@@ -59,7 +59,7 @@ def s4_create_chain_back():
         print(e)
         return Response(status=500)
     finally:
-        data = select_chain()
+        data = s5_front_helper()
         print(data)
         conn.close()
         # return render_template("admin_home.html")
@@ -73,12 +73,12 @@ def s5_create_store_back():
     street = request.form['street']
     city = request.form['city']
     state = request.form['state']
-    zip = request.form['zip']
+    zipcode = request.form['zip']
 
     conn = db.connect()
     cur = conn.cursor()
     try:
-        cur.callproc('admin_create_new_store', [store_name,chain_name,street,city,state,zip])
+        cur.callproc('admin_create_new_store', [store_name,chain_name,street,city,state,zipcode])
         conn.commit()
         flash("Store Creation Succeed!")
     except Exception as e:
@@ -93,6 +93,31 @@ def s5_create_store_back():
         conn.close()
         return redirect(url_for('frontend_api.s3_home_admin_front'))
 
+@backend_api.route('/s6_create_drone_back', methods=["POST"])
+def s6_create_drone_back():
+    print(request.form)
+    id = request.form['drone-id']
+    zipcode = request.form['zipcode']
+    radius = request.form['radius']
+    tech = request.form['tech']
+
+    conn = db.connect()
+    cur = conn.cursor()
+    try:
+        cur.callproc('admin_create_drone', [id,zipcode,radius,tech])
+        conn.commit()
+        flash("Drone Creation Succeed!")
+    except Exception as e:
+        flash(e)
+        print(e)
+        return Response(status=500)
+    finally:
+        cur.execute('select * from drone')
+        conn.commit()
+        result = cur.fetchall()
+        print(result)
+        conn.close()
+        return redirect(url_for('frontend_api.s3_home_admin_front'))
 
 def s5_front_helper():
     conn = db.connect()
@@ -127,9 +152,9 @@ def s6_front_helper1():
     conn.close()
     return new_id, ziplist
 
-@backend_api.route('/s6_front_helper2')
+@backend_api.route('/s6_front_helper2', methods=["POST"])
 def s6_front_helper2():
-    zipcode = request.args.get("ziplist")
+    zipcode = request.form["ziplist"]
     conn = db.connect()
     cur = conn.cursor()
     cur.execute('select distinct(username) from drone_tech natural join users where zipcode = %s',[zipcode])
