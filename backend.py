@@ -1,4 +1,4 @@
-from flask import Blueprint, request, Response, redirect, render_template, url_for, flash
+from flask import Blueprint, request, Response, redirect, jsonify, url_for, flash
 from flaskext.mysql import MySQL
 import json
 
@@ -43,11 +43,11 @@ def initial():
     conn.close()
     print("initialized")
 
-    return redirect(url_for('frontend_api.index'))
+    return redirect(url_for('frontend_api.s1_login_front'))
 
 
-@backend_api.route('/create_chain_back', methods=["POST"])
-def create_chain_back():
+@backend_api.route('/s4_create_chain_back', methods=["POST"])
+def s4_create_chain_back():
     chain_name = request.form['chain-name']
     conn = db.connect()
     cur = conn.cursor()
@@ -63,10 +63,10 @@ def create_chain_back():
         print(data)
         conn.close()
         # return render_template("admin_home.html")
-        return redirect(url_for('frontend_api.admin_home'))
+        return redirect(url_for('frontend_api.s3_home_admin_front'))
 
-@backend_api.route('/create_store_back', methods=["POST"])
-def create_store_back():
+@backend_api.route('/s5_create_store_back', methods=["POST"])
+def s5_create_store_back():
     print(request.form)
     chain_name = request.form['chain-name']
     store_name = request.form['store-name']
@@ -91,10 +91,10 @@ def create_store_back():
         result = cur.fetchall()
         print(result)
         conn.close()
-        return redirect(url_for('frontend_api.admin_home'))
+        return redirect(url_for('frontend_api.s3_home_admin_front'))
 
 
-def select_chain():
+def s5_front_helper():
     conn = db.connect()
     cur = conn.cursor()
     cur.execute('select * from chain')
@@ -107,3 +107,35 @@ def select_chain():
     conn.close()
 
     return list_data
+
+def s6_front_helper1():
+    conn = db.connect()
+    cur = conn.cursor()
+    cur.execute('select max(id) from drone')
+    conn.commit()
+
+    result = cur.fetchall()
+    new_id = result[0][0]+1
+
+    cur.execute('select distinct(zipcode) from users natural join drone_tech')
+    conn.commit()
+    result = cur.fetchall()
+    ziplist = []
+    for row in result:
+        ziplist.append(row[0])
+    print(ziplist)
+    conn.close()
+    return new_id, ziplist
+
+@backend_api.route('/s6_front_helper2')
+def s6_front_helper2():
+    zipcode = request.args.get("ziplist")
+    conn = db.connect()
+    cur = conn.cursor()
+    cur.execute('select distinct(username) from drone_tech natural join users where zipcode = %s',[zipcode])
+    conn.commit()
+
+    result = cur.fetchall()
+    data = [{"username": x[0]} for x in result]
+    print(data)
+    return jsonify(data)

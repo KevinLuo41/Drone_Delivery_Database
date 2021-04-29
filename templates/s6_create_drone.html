@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Admin Create Drone</title>
+</head>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>window.jQuery || document.write('<script src="{{url_for('static', filename='jquery.js') }}">\x3C/script>')</script>
+
+<body>
+
+<h1>Admin Create Drone</h1>
+
+
+<form action="/Admin Create Drone" method="POST">
+
+    <div>
+        <label for="Drone ID">Drone ID</label>
+        <input type="text" name="Drone ID" id="Drone ID" value={{id}} readonly/>
+    </div>
+    <div>
+        <label for="Affiliated Grocery Code">Affiliated Grocery Code:</label>
+        <select name="Affiliated Grocery Code" id="Affiliated Grocery Code">
+            <option value="0" selected disabled>zipcode</option>
+            {% for zip in ziplist %}
+            <option value="{{zip}}">{{zip}}</option>
+            {% endfor %}
+
+        </select>
+    </div>
+    <div>
+        <label for="Travel Radius"> Travel Radius:</label>
+        <input type="text" name="Travel Radius" id="Travel Radius" required/>
+    </div>
+
+
+    <div>
+        <label for="Status">Status:</label>
+        <select name="Status" id="Status">
+            <option value="0" selected disabled>Available</option>
+
+        </select>
+    </div>
+
+    <div>
+        <label for="Store Associate">Store Associate:</label>
+        <select name="Store Associate" id="Store Associate">
+            <option value="0" selected disabled>Employee</option>
+        </select>
+
+    </div>
+</form>
+<script charset="utf-8" type="text/javascript">
+    $(function () {
+        var dropdown = {
+            ziplist: $('#Affiliated Grocery Code')
+        };
+
+        // function to call XHR and update goodsrec dropdown
+        function getemployee() {
+            var zipcode = dropdown.ziplist.val();
+            console.log(zipcode);
+            dropdown["Store Associate"].attr('disabled', 'disabled');
+
+            if (customer !== "zipcode") {
+                $.getJSON("{{ url_for('backend_api.s6_front_helper2') }}", {ziplist: zipcode}, function (data) {
+                    console.log(data);
+                    data.forEach(function (item) {
+                        dropdown.["Store Associate"].append(
+                            $('<option>', {
+                                value: item.username,
+                                text: item.username
+                            })
+                        );
+                    });
+                    dropdown["Store Associate"].removeAttr('disabled');
+                });
+            }
+        }
+
+        // event listener to customer dropdown change
+        dropdown.customer.on('change', function () {
+            updateGoodsrec();
+        });
+
+    });
+</script>
+
+
+<div>
+    <input type="submit" value="Back"/>
+    <input type="submit" value="Create"/>
+</div>
+</body>
+
+</html>

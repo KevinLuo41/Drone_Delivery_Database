@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Home Screen</title>
+</head>
+<style>
+    h1 {
+        text-align: left;
+    }
+</style>
+
+<body>
+<h1> Admin Home </h1>
+
+<div>
+    {% with messages = get_flashed_messages(with_categories=True) %}
+    {% if messages %}
+    {% for category, message in messages %}
+    <h2 style="color: red;">{{message}}</h2>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+
+    {% block body %}{% endblock %}
+</div>
+
+
+
+<form>
+    <input type="submit" value="Create Item"/>
+</form>
+
+<form action="/s6_create_drone">
+    <input type="submit" value="Create Drone" />
+</form>
+
+<form>
+    <input type="submit" value="View Customer Info"/>
+</form>
+
+
+<form action="/s4_create_chain">
+    <input type="submit" value="Create Grocery Chain"/>
+</form>
+
+<form action="/s5_create_store">
+    <input type="submit" value="Create Store" />
+</form>
+
+
+<div>
+    <a href="/"> Back </a>
+</div>
+
+</body>
+</html>

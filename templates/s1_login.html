@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Login</title>
+</head>
+
+<!-- body-->
+<body>
+<h1> Login</h1>
+
+<form action="/s1_login_front" method="POST">
+    <div>
+        <label for="username">Username:</label>
+        <input type="text" name="username" id="username" placeholder="username1" required/>
+    </div>
+
+    <div>
+        <label for="Password">Password</label>
+        <input type="text" name="password" id="password" placeholder="********" required/>
+
+    </div>
+</form>
+
+
+<form>
+    <input type="submit" value="Create"/>
+</form>
+
+<form action = "/s2_register">
+    <input type="submit" value="Register"/>
+
+</form>
+
+
+<br/>
+<br/><br/>
+<br/>
+<form action="/initial">
+    Just for Developer:
+    <input type="submit" value="Initialize the whole database"/>
+</form>
+
+</body>
+
+
+</html>
