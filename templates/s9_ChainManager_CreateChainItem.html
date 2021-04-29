@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title> Chain Manager Create Chain Item</title>
+</head>
+<style>
+    h1 {
+        text-align: left;
+    }
+</style>
+
+<body>
+<h1> Chain Manager Create Chain Item </h1>
+
+
+
+
+<form>
+    <div>
+        <label for="Chain Name">Chain Name:</label>
+        <input type="text" name="Chain Name" id="Chain Name" placeholder="Moss Market" required/>
+    </div>
+</form>
+
+
+
+<form>
+    <div>
+        <label for="Item">Type:</label>
+        <select name="Item" id="Item">
+            <option value="Navel Orange" selected disabled>Navel Orange</option>
+        </select>
+    </div>
+</form>
+
+
+
+
+
+<form>
+    <div>
+        <label for="Quantity Available">CQuantity Available:</label>
+        <input type="text" name="Quantity Available" id="Quantity Available" placeholder="500" required/>
+    </div>
+</form>
+
+
+
+
+<form>
+    <div>
+        <label for="Limit Per Order">CLimit Per Order:</label>
+        <input type="text" name="Limit Per Order" id="Limit Per Order" placeholder="20" required/>
+    </div>
+</form>
+
+
+<form>
+    <div>
+        <label for="PLU Number">PLU Number:</label>
+        <input type="text" name="PLU Number" id="PLU Number" placeholder="10098" required/>
+    </div>
+</form>
+
+
+
+
+<form>
+    <div>
+        <label for="Price per Unit">Price per Unit         $:</label>
+        <input type="text" name="Price per Unit" id="Price per Unit" placeholder="0.88" required/>
+    </div>
+</form>
+
+
+
+
+
+<form action="/s8_create_store">
+    <input type="submit" value="Back" />
+</form>
+
+
+
+
+<form>
+    <input type="submit" value="Create"/>
+</form>
+
+
+</body>
+
+
+</html>
