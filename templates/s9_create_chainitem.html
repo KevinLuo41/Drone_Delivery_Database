@@ -20,61 +20,33 @@
         <label for="Chain Name">Chain Name:</label>
         <input type="text" name="Chain Name" id="Chain Name" value={{ chain_name }} /readonly>
     </div>
-</form>
-
-
-
-<form>
-    <div>
-        <label for="Item">Type:</label>
+	<div>
+        <label for="Item">Item:</label>
         <select name="Item" id="Item">
-            <option value="Navel Orange" selected disabled>Navel Orange</option>
+            <!-- <option value="Navel Orange" selected disabled>Navel Orange</option> -->
+			{% for item in item_list %}
+                <option value="{{ item }}">{{ item }}</option>
+            {% endfor %}
         </select>
     </div>
-</form>
-
-
-
-
-
-<form>
-    <div>
+	<div>
         <label for="Quantity Available">Quantity Available:</label>
         <input type="text" name="Quantity Available" id="Quantity Available" placeholder="500" required/>
     </div>
-</form>
-
-
-
-
-<form>
-    <div>
+	<div>
         <label for="Limit Per Order">Limit Per Order:</label>
         <input type="text" name="Limit Per Order" id="Limit Per Order" placeholder="20" required/>
     </div>
-</form>
-
-
-<form>
-    <div>
+	<div>
         <label for="PLU Number">PLU Number:</label>
         <input type="text" name="PLU Number" id="PLU Number" placeholder="10098" required/>
     </div>
-</form>
-
-
-
-
-<form>
     <div>
         <label for="Price per Unit">Price per Unit         $:</label>
         <input type="text" name="Price per Unit" id="Price per Unit" placeholder="0.88" required/>
     </div>
+	
 </form>
-
-
-
-
 
 <form action="/s8_create_store">
     <input type="submit" value="Back" />
