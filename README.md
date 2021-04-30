@@ -6,3 +6,6 @@
 - Complete Create Chain
 
 - Complete Admin View Customers (s8)
+
+## Wen Li：
+- Complete Create Item
