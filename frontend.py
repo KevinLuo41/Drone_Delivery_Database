@@ -48,3 +48,10 @@ def s6_create_drone_front():
     id,ziplist = backend.s6_front_helper1()
     print(id)
     return render_template("s6_create_drone.html",id = id, ziplist=ziplist)
+
+
+# S8
+@frontend_api.route('/s8_admin_view_customers', methods=['GET'])
+def s8_admin_view_customers_view():
+    print('in front')
+    return render_template("s8_admin_view_customers.html")
