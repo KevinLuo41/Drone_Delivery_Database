@@ -51,7 +51,7 @@ def s6_create_drone_front():
 
 
 # S8
-@frontend_api.route('/s8_admin_view_customers', methods=['GET'])
+@frontend_api.route('/s8_view_customers', methods=['GET'])
 def s8_admin_view_customers_view():
     print('in front')
-    return render_template("s8_admin_view_customers.html")
+    return render_template("s8_view_customers.html")

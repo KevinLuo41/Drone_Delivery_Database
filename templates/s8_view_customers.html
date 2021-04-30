@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title> Admin View Customers</title>
 </head>
@@ -10,44 +11,62 @@
 </style>
 
 <body>
-<h1> Admin View Customers </h1>
+    <h1> Admin View Customers </h1>
+
+    <form action="/s8_view_customers" , method="POST">
+        <div>
+            <label for="customer">Customer:</label>
+            <input type="text" name="customer_firstname" id="Customer" placeholder="First" {% if fname %}value={{fname}}
+                {% endif %} />
+            <input type="text" name="customer_lastname" id="Customer" placeholder="Last" {% if lname %}value={{lname}}
+                {% endif %} />
+            <input type="submit" value="Filter" />
+        </div>
+    </form>
+
+    <form action="/s8_view_customers" method="GET">
+        <input type="submit" value="Reset" />
+    </form>
+
+
+    {% if result %}
+    <table>
+        <tr>
+            <th>Username</th>
+            <th>Name</th>
+            <th>Address</th>
+        </tr>
+        {% for row in result %}
+        <tr>
+            <td>{{ row[0] }}</td>
+            <td>{{ row[1] }}</td>
+            <td>{{ row[2] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% endif %}
 
 
 
-
-
-<form>
-    <div>
-        <label for="Customer">Customer:</label>
-        <input type="text" name="Customer_first" id="Customer" placeholder="First" required/>
-
-        <input type="text" name ="Customer_last" id = "Customer" placeholder="Last" required/>
-    
-    </div>
-</form>
-
-
-<div>
-    <h2 style="color: red;">{{Database Show}}</h2>
-</div>
-
-
-
-
-<form>
-    <input type="submit" value="Filter"/>
-</form>
-
-
-<form>
-    <input type="submit" value="Reset"/>
-</form>
-
-<form action="/s7_create_store">
-    <input type="submit" value="Back" />
-</form>
-
+    <form action="/s3_home_admin" method="GET">
+        <input type="submit" value="Back" />
+    </form>
 </body>
+
+<script>
+    const getCellValue = (tr, idx) => tr.children[idx].innerText || tr.children[idx].textContent;
+
+    const comparer = (idx, asc) => (a, b) => ((v1, v2) =>
+        v1 !== '' && v2 !== '' && !isNaN(v1) && !isNaN(v2) ? v1 - v2 : v1.toString().localeCompare(v2)
+    )(getCellValue(asc ? a : b, idx), getCellValue(asc ? b : a, idx));
+
+    document.querySelectorAll('th').forEach(th => th.addEventListener('click', (() => {
+        const table = th.closest('table');
+        Array.from(table.querySelectorAll('tr:nth-child(n+2)'))
+            .sort(comparer(Array.from(th.parentNode.children).indexOf(th), this.asc = !this.asc))
+            .forEach(tr => table.appendChild(tr));
+    })));
+</script>
 
 
 </html>

@@ -166,7 +166,7 @@ def s6_front_helper2():
     return jsonify(data)
 
 
-@backend_api.route('/s8_admin_view_customers', methods=["POST"])
+@backend_api.route('/s8_view_customers', methods=["POST"])
 def s8_admin_view_customers():
     print(request.form)
     print("in filter")
@@ -192,4 +192,4 @@ def s8_admin_view_customers():
         result_list = list(result)
         print(result_list)
         conn.close()
-    return render_template("s8_admin_view_customers.html", result=result_list, fname=firstname, lname=lastname)
+    return render_template("s8_view_customers.html", result=result_list, fname=firstname, lname=lastname)
