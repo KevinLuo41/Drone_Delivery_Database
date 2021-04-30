@@ -251,3 +251,27 @@ def s8_admin_view_customers():
         print(result_list)
         conn.close()
     return render_template("s8_view_customers.html", result=result_list, fname=firstname, lname=lastname)
+
+@backend_api.route('/s7_create_item_back', methods=["POST"])
+def s7_create_item_back():
+    print(request.form)
+    item_name = request.form['Name']
+    item_type = request.form['Type']
+    item_organic = request.form['Organic']
+    item_origin = request.form['Origin']
+    conn = db.connect()
+    cur = conn.cursor()
+    try:
+        cur.callproc('admin_create_item', [item_name, item_type, item_organic, item_origin])
+        conn.commit()
+        flash("Item Creation Succeed!!")
+    except Exception as e:
+        print(e)
+        return Response(status=500)
+    finally:
+        cur.execute('select * from item')
+        conn.commit()
+        result = cur.fetchall()
+        print(result)
+        conn.close()
+        return redirect(url_for('frontend_api.s3_home_admin_front'))

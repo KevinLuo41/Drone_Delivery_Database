@@ -26,55 +26,49 @@
 
 
 <form>
+
+</form>
+
+<form action="/s7_create_item_back" method="POST">
     <div>
         <label for="Name">Name:</label>
         <input type="text" name="Name" id="Name" placeholder="Navek Orange" required/>
     </div>
-</form>
-
-<form>
     <div>
         <label for="Type">Type:</label>
         <select name="Type" id="Type">
-            <option value="0" selected disabled>Produce</option>
-            {% for item in data %}
+            <option value="Dairy">Dairy</option>
+			<option value="Bakery">Bakery</option>
+			<option value="Meat">Meat</option>
+			<option value="Produce">Produce</option>
+			<option value="Personal Care">Personal Care</option>
+			<option value="Paper Goods">Paper Goods</option>
+			<option value="Beverages">Beverages</option>
+			<option value="Other">Other</option>
+<!--             {% for item in data %}
                 <option value="{{item}}">{{item}}</option>
-            {% endfor %}
+            {% endfor %} -->
         </select>
     </div>
-</form>
-
-<form>
-    <div>
-        <label for="Organic">Type:</label>
+	    <div>
+        <label for="Organic">Organic:</label>
         <select name="Organic" id="Organic">
-            <option value="Yes" selected disabled>Yes</option>
-            {% for item in data %}
-                <option value="item">No</option>
-            {% endfor %}
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+            <!-- {% for item in data %} -->
+            <!-- {% endfor %} -->
         </select>
     </div>
-</form>
-
-
-
-<form>
-    <div>
+	    <div>
         <label for="Origin">Origin:</label>
         <input type="text" name="Origin" id="Origin" placeholder="California" required/>
     </div>
+	<input type="submit" value="Create" />
 </form>
 
-
-
-<form>
+<form action="/s3_home_admin">
     <input type="submit" value="Back"/>
 </form>
-
-<form action="/s8_create_chain">
-    <input type="submit" value="Create" />
-</form>
-
 </body>
 
 
