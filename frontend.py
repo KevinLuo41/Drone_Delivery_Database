@@ -59,3 +59,9 @@ def s7_create_item_front():
 def s8_admin_view_customers_view():
     print('in front')
     return render_template("s8_view_customers.html")
+
+# S8
+@frontend_api.route('/s9_create_chainitem', methods=['GET'])
+def s9_create_chainitem():
+    print('in front')
+    return render_template("s9_create_chainitem.html")
