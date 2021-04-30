@@ -49,6 +49,10 @@ def s6_create_drone_front():
     print(id)
     return render_template("s6_create_drone.html",id = id, ziplist=ziplist)
 
+#7
+@frontend_api.route('/s7_create_item', methods=['GET','POST'])
+def s7_create_item_front():
+    return render_template("s7_create_item.html")
 
 # S8
 @frontend_api.route('/s8_view_customers', methods=['GET'])
