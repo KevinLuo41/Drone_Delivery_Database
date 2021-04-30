@@ -275,3 +275,24 @@ def s7_create_item_back():
         print(result)
         conn.close()
         return redirect(url_for('frontend_api.s3_home_admin_front'))
+    
+def s9_front_helper():
+    conn = db.connect()
+    cur = conn.cursor()
+    cur.execute('select ChainName from manager where username = %s', [config.USERNAME])
+    conn.commit()
+
+    result = cur.fetchall()
+    ChainName = result[0][0]
+    
+    cur.execute('select * from item')
+    conn.commit()
+    
+    result = cur.fetchall()
+    itemlist = []
+    for row in result:
+        itemlist.append(row[0])
+    print(itemlist)
+    
+    conn.close()
+    return ChainName,itemlist
