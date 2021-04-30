@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title> Manage chain's Stores </title>
+</head>
+<style>
+    h1 {
+        text-align: left;
+    }
+</style>
+
+<body>
+<h1> Manage chain's Stores </h1>
+
+
+
+
+<form>
+    <div>
+        <label for="Chain"> Chain:</label>
+        <input type="text" name="Chain" id="Chain" placeholder="Moss Market" required/>
+    </div>
+</form>
+
+
+
+<form>
+    <div>
+        <label for="Total Range">Total Range:</label>
+        <input type="text" name="Total Range" id="Radius" required/>
+        <h3> --- </h3>
+        <input type="text" name="Total Range" id="Radius" required/>
+    </div>
+</form>
+
+
+
+
+<form>
+    <div>
+        <label for="Name">Name:</label>
+        <select name="Name" id="Name">
+            <option value="NULL" selected disabled> NULL </option>
+        </select>
+    </div>
+</form>
+
+
+
+
+<div>
+    <h2 style="color: red;">{{Database Show}}</h2>
+</div>
+
+
+
+
+
+<form action="/s11_ChainManager_ViewDrones.html">
+    <input type="submit" value="Back" />
+</form>
+
+
+
+
+<form>
+    <input type="submit" value="Reset"/>
+</form>
+
+
+<form>
+    <input type="submit" value="Filter"/>
+</form>
+
+
+</body>
+
+
+</html>

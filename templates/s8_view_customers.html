@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title> Admin View Customers</title>
+</head>
+<style>
+    h1 {
+        text-align: left;
+    }
+</style>
+
+<body>
+<h1> Admin View Customers </h1>
+
+
+
+
+
+<form>
+    <div>
+        <label for="Customer">Customer:</label>
+        <input type="text" name="Customer_first" id="Customer" placeholder="First" required/>
+
+        <input type="text" name ="Customer_last" id = "Customer" placeholder="Last" required/>
+    
+    </div>
+</form>
+
+
+<div>
+    <h2 style="color: red;">{{Database Show}}</h2>
+</div>
+
+
+
+
+<form>
+    <input type="submit" value="Filter"/>
+</form>
+
+
+<form>
+    <input type="submit" value="Reset"/>
+</form>
+
+<form action="/s7_create_store">
+    <input type="submit" value="Back" />
+</form>
+
+</body>
+
+
+</html>
