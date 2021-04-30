@@ -1,4 +1,4 @@
-from flask import Blueprint, request, Response, redirect, jsonify, url_for, flash
+from flask import Blueprint, request, Response, redirect, jsonify, url_for, flash, render_template
 from flaskext.mysql import MySQL
 import config
 
@@ -222,3 +222,32 @@ def s6_front_helper2():
     data = [{"username": x[0]} for x in result]
     print(data)
     return jsonify(data)
+
+
+@backend_api.route('/s8_view_customers', methods=["POST"])
+def s8_admin_view_customers():
+    print(request.form)
+    print("in filter")
+    firstname = request.form['customer_firstname']
+    lastname = request.form['customer_lastname']
+    if firstname == '': firstname = None
+    if lastname == '': lastname = None
+    conn = db.connect()
+    cur = conn.cursor()
+    result_list = []
+    try:
+        cur.callproc('admin_view_customers', [firstname, lastname]) # 8a
+        conn.commit()
+        flash("Customers Filter Succeed!")
+    except Exception as e:
+        # flash(e)
+        print(e)
+        return Response(status=500)
+    finally:
+        cur.execute('select * from admin_view_customers_result')
+        conn.commit()
+        result = cur.fetchall()
+        result_list = list(result)
+        print(result_list)
+        conn.close()
+    return render_template("s8_view_customers.html", result=result_list, fname=firstname, lname=lastname)
