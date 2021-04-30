@@ -1,6 +1,6 @@
 from flask import Blueprint, request, Response, redirect, jsonify, url_for, flash
 from flaskext.mysql import MySQL
-import os
+import config
 
 db = MySQL()
 backend_api = Blueprint('backend_api', __name__)
@@ -44,6 +44,64 @@ def initial():
     print("initialized")
 
     return redirect(url_for('frontend_api.s1_login_front'))
+
+@backend_api.route('/s1_login_back', methods=["POST"])
+def s1_login_back():
+    # print("asdf")
+    global USERNAME, USERTYPE
+    username = request.form['username']
+    password = request.form['password']
+
+    print(username, password)
+    if not password or not username:
+        flash("Empty username or password!!")
+        return redirect(url_for('frontend_api.s1_login_front'))
+
+    conn = db.connect()
+    cur = conn.cursor()
+
+    try:
+        cur.execute('SELECT * FROM users where username = %s and (pass = MD5(%s) or pass = %s)',
+                    [username,password,password])
+        conn.commit()
+        result = cur.fetchall()
+        if not result:
+            flash('incorrect username or password')
+            return redirect(url_for('frontend_api.s1_login_front'))
+        # print(result)
+
+        type =None
+        cur.execute('select * from admin where username = %s',[username])
+        if cur.fetchall(): type = "admin"
+
+        cur.execute('select * from customer where username = %s',[username])
+        if cur.fetchall(): type = "customer"
+
+        cur.execute('select * from manager where username = %s',[username])
+        if cur.fetchall(): type = "manager"
+
+        cur.execute('select * from drone_tech where username = %s',[username])
+        if cur.fetchall(): type = "tech"
+
+    except Exception as e:
+        print(e)
+        return Response(status=500)
+    finally:
+        conn.close()
+
+    print('type', type)
+    config.USERNAME = username
+    config.USERTYPE = type
+
+    if type == 'customer':
+        return redirect(url_for('frontend_api.s3_home_customer_front'))
+    if type == 'tech':
+        return redirect(url_for('frontend_api.s3_home_tech_front'))
+    if type == 'manager':
+        return redirect(url_for('frontend_api.s3_home_manager_front'))
+    if type == 'admin':
+        return redirect(url_for('frontend_api.s3_home_admin_front'))
+
 
 
 @backend_api.route('/s4_create_chain_back', methods=["POST"])

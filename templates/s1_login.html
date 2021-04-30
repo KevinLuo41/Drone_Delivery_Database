@@ -9,25 +9,32 @@
 <body>
 <h1> Login</h1>
 
-<form action="/s1_login_front" method="POST">
-    <div>
-        <label for="username">Username:</label>
-        <input type="text" name="username" id="username" placeholder="username1" required/>
-    </div>
+<div>
+    {% with messages = get_flashed_messages(with_categories=True) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <h2 style="color: red;">{{ message }}</h2>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
 
-    <div>
-        <label for="Password">Password</label>
-        <input type="text" name="password" id="password" placeholder="********" required/>
+    {% block body %}{% endblock %}
+</div>
 
-    </div>
+<form action="/s1_login_back" id="login" method="POST">
+    <label for="username">Username:</label>
+    <input type="text" name="username" id="username" placeholder="username" required/>
+    <br/>
+    <label for="password">Password</label>
+    <input type="password" name="password" id="password" placeholder="********" required/>
 </form>
 
-
-<form>
-    <input type="submit" value="Create"/>
+<br/>
+<form action="/s1_login_back">
+    <input type="submit" value="Login" form="login"/>
 </form>
 
-<form action = "/s2_register">
+<form action="/s2_register">
     <input type="submit" value="Register"/>
 
 </form>
