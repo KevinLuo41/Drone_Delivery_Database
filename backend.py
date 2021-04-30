@@ -238,7 +238,7 @@ def s8_admin_view_customers():
     try:
         cur.callproc('admin_view_customers', [firstname, lastname]) # 8a
         conn.commit()
-        flash("Customers Filter Succeed!")
+        # flash("Customers Filter Succeed!")
     except Exception as e:
         # flash(e)
         print(e)
