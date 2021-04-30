@@ -13,15 +13,13 @@
 <body>
     <h1> Admin View Customers </h1>
 
-
-
-
-
     <form action="/s8_admin_view_customers" , method="POST">
         <div>
             <label for="customer">Customer:</label>
-            <input type="text" name="customer_firstname" id="Customer" placeholder="First" {% if fname %}value={{fname}} {% endif %}/>
-            <input type="text" name="customer_lastname" id="Customer" placeholder="Last" {% if lname %}value={{lname}} {% endif %}/>
+            <input type="text" name="customer_firstname" id="Customer" placeholder="First" {% if fname %}value={{fname}}
+                {% endif %} />
+            <input type="text" name="customer_lastname" id="Customer" placeholder="Last" {% if lname %}value={{lname}}
+                {% endif %} />
             <input type="submit" value="Filter" />
         </div>
     </form>
@@ -34,9 +32,6 @@
     {% if result %}
     <table>
         <tr>
-            <!-- <th onclick="sortTable(0, 'inc')">Username</th>
-            <th onclick="sortTable(1)">Name</th>
-            <th onclick="sortTable(1)">Address</th> -->
             <th>Username</th>
             <th>Name</th>
             <th>Address</th>
@@ -61,18 +56,16 @@
 <script>
     const getCellValue = (tr, idx) => tr.children[idx].innerText || tr.children[idx].textContent;
 
-const comparer = (idx, asc) => (a, b) => ((v1, v2) => 
-    v1 !== '' && v2 !== '' && !isNaN(v1) && !isNaN(v2) ? v1 - v2 : v1.toString().localeCompare(v2)
+    const comparer = (idx, asc) => (a, b) => ((v1, v2) =>
+        v1 !== '' && v2 !== '' && !isNaN(v1) && !isNaN(v2) ? v1 - v2 : v1.toString().localeCompare(v2)
     )(getCellValue(asc ? a : b, idx), getCellValue(asc ? b : a, idx));
 
-// do the work...
-document.querySelectorAll('th').forEach(th => th.addEventListener('click', (() => {
-    const table = th.closest('table');
-    Array.from(table.querySelectorAll('tr:nth-child(n+2)'))
-        .sort(comparer(Array.from(th.parentNode.children).indexOf(th), this.asc = !this.asc))
-        .forEach(tr => table.appendChild(tr) );
-})));
-
+    document.querySelectorAll('th').forEach(th => th.addEventListener('click', (() => {
+        const table = th.closest('table');
+        Array.from(table.querySelectorAll('tr:nth-child(n+2)'))
+            .sort(comparer(Array.from(th.parentNode.children).indexOf(th), this.asc = !this.asc))
+            .forEach(tr => table.appendChild(tr));
+    })));
 </script>
 
 

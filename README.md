@@ -5,3 +5,4 @@
 - Complete Create Store
 - Complete Create Chain
 
+- Complete Admin View Customers (s8)
