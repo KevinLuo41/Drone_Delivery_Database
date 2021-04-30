@@ -11,3 +11,5 @@
 ## Wen Li：
 - S7 Complete Create Item
 - S9 Complete Create Chain Item(JS might be needed to check existence of chain item combination)
+
+- S1 Complete Login
