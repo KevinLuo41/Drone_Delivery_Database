@@ -21,7 +21,7 @@
     {% block body %}{% endblock %}
 </div>
 
-<form action="/s1_login_back" id="login" method="POST">
+<form action="/s1_login" id="login" method="POST">
     <label for="username">Username:</label>
     <input type="text" name="username" id="username" placeholder="username" required/>
     <br/>
@@ -30,11 +30,11 @@
 </form>
 
 <br/>
-<form action="/s1_login_back">
+<form action="/s1_login" method = "GET">
     <input type="submit" value="Login" form="login"/>
 </form>
 
-<form action="/s2_register">
+<form action="/s2_register" method = "GET">
     <input type="submit" value="Register"/>
 
 </form>
@@ -43,7 +43,7 @@
 <br/>
 <br/><br/>
 <br/>
-<form action="/initial">
+<form action="/initial" method = "POST">
     Just for Developer:
     <input type="submit" value="Initialize the whole database"/>
 </form>

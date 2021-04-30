@@ -5,7 +5,7 @@ import config
 db = MySQL()
 backend_api = Blueprint('backend_api', __name__)
 
-@backend_api.route("/initial")
+@backend_api.route("/initial", methods=["POST"])
 def initial():
     conn = db.connect()
     cur = conn.cursor()
@@ -45,7 +45,7 @@ def initial():
 
     return redirect(url_for('frontend_api.s1_login_front'))
 
-@backend_api.route('/s1_login_back', methods=["POST"])
+@backend_api.route('/s1_login', methods=["POST"])
 def s1_login_back():
     # print("asdf")
     global USERNAME, USERTYPE
@@ -104,7 +104,7 @@ def s1_login_back():
 
 
 
-@backend_api.route('/s4_create_chain_back', methods=["POST"])
+@backend_api.route('/s4_create_chain', methods=["POST"])
 def s4_create_chain_back():
     chain_name = request.form['chain-name']
     conn = db.connect()
@@ -123,7 +123,7 @@ def s4_create_chain_back():
         # return render_template("admin_home.html")
         return redirect(url_for('frontend_api.s3_home_admin_front'))
 
-@backend_api.route('/s5_create_store_back', methods=["POST"])
+@backend_api.route('/s5_create_store', methods=["POST"])
 def s5_create_store_back():
     print(request.form)
     chain_name = request.form['chain-name']
@@ -151,7 +151,21 @@ def s5_create_store_back():
         conn.close()
         return redirect(url_for('frontend_api.s3_home_admin_front'))
 
-@backend_api.route('/s6_create_drone_back', methods=["POST"])
+def s5_front_helper():
+    conn = db.connect()
+    cur = conn.cursor()
+    cur.execute('select * from chain')
+    conn.commit()
+
+    result = cur.fetchall()
+    list_data = []
+    for row in result:
+        list_data.append(row[0])
+    conn.close()
+
+    return list_data
+
+@backend_api.route('/s6_create_drone', methods=["POST"])
 def s6_create_drone_back():
     print(request.form)
     id = request.form['drone-id']
@@ -176,20 +190,6 @@ def s6_create_drone_back():
         print(result)
         conn.close()
         return redirect(url_for('frontend_api.s3_home_admin_front'))
-
-def s5_front_helper():
-    conn = db.connect()
-    cur = conn.cursor()
-    cur.execute('select * from chain')
-    conn.commit()
-
-    result = cur.fetchall()
-    list_data = []
-    for row in result:
-        list_data.append(row[0])
-    conn.close()
-
-    return list_data
 
 def s6_front_helper1():
     conn = db.connect()
@@ -252,7 +252,7 @@ def s8_admin_view_customers():
         conn.close()
     return render_template("s8_view_customers.html", result=result_list, fname=firstname, lname=lastname)
 
-@backend_api.route('/s7_create_item_back', methods=["POST"])
+@backend_api.route('/s7_create_item', methods=["POST"])
 def s7_create_item_back():
     print(request.form)
     item_name = request.form['Name']
@@ -303,7 +303,7 @@ def s9_front_helper():
     conn.close()
     return ChainName,itemlist,new_PLU
 
-@backend_api.route('/s9_create_chainitem_back', methods=["POST"])
+@backend_api.route('/s9_create_chainitem', methods=["POST"])
 def s9_create_chainitem_back():
     print(request.form)
     chain_name = request.form['Chain Name']
