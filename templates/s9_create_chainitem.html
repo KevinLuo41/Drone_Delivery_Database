@@ -15,7 +15,7 @@
 
 
 
-<form>
+<form action="/s9_create_chainitem_back" method="POST">
     <div>
         <label for="Chain Name">Chain Name:</label>
         <input type="text" name="Chain Name" id="Chain Name" value={{ chain_name }} /readonly>
@@ -39,24 +39,18 @@
     </div>
 	<div>
         <label for="PLU Number">PLU Number:</label>
-        <input type="text" name="PLU Number" id="PLU Number" placeholder="10098" required/>
+        <input type="text" name="PLU Number" id="PLU Number" value={{ new_PLU }} /readonly>
     </div>
     <div>
         <label for="Price per Unit">Price per Unit         $:</label>
         <input type="text" name="Price per Unit" id="Price per Unit" placeholder="0.88" required/>
     </div>
+	<input type="submit" value="Create"/>
 	
 </form>
 
-<form action="/s8_create_store">
+<form action = "/s3_home_manager">
     <input type="submit" value="Back" />
-</form>
-
-
-
-
-<form>
-    <input type="submit" value="Create"/>
 </form>
 
 

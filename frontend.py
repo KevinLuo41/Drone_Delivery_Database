@@ -49,7 +49,7 @@ def s6_create_drone_front():
     print(id)
     return render_template("s6_create_drone.html",id = id, ziplist=ziplist)
 
-#7
+#S7
 @frontend_api.route('/s7_create_item', methods=['GET','POST'])
 def s7_create_item_front():
     return render_template("s7_create_item.html")
@@ -60,9 +60,8 @@ def s8_admin_view_customers_view():
     print('in front')
     return render_template("s8_view_customers.html")
 
-# S8
-@frontend_api.route('/s9_create_chainitem', methods=['GET'])
+# S9
+@frontend_api.route('/s9_create_chainitem', methods=['GET','POST'])
 def s9_create_chainitem():
-    chain_name,item_list = backend.s9_front_helper()
-    print('in front')
-    return render_template("s9_create_chainitem.html",chain_name = chain_name,item_list=item_list)
+    chain_name,item_list,new_PLU = backend.s9_front_helper()
+    return render_template("s9_create_chainitem.html",chain_name = chain_name,item_list=item_list,new_PLU = new_PLU)

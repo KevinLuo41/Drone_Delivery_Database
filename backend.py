@@ -294,5 +294,37 @@ def s9_front_helper():
         itemlist.append(row[0])
     print(itemlist)
     
+    cur.execute('select max(PLUNumber) from chain_item')
+    conn.commit()
+
+    result = cur.fetchall()
+    new_PLU = result[0][0]+1
+    
     conn.close()
-    return ChainName,itemlist
+    return ChainName,itemlist,new_PLU
+
+@backend_api.route('/s9_create_chainitem_back', methods=["POST"])
+def s9_create_chainitem_back():
+    print(request.form)
+    chain_name = request.form['Chain Name']
+    item_name = request.form['Item']
+    quantity = request.form['Quantity Available']
+    order_limit = request.form['Limit Per Order']
+    PLU = request.form['PLU Number']
+    price = request.form['Price per Unit']
+    conn = db.connect()
+    cur = conn.cursor()
+    try:
+        cur.callproc('manager_create_chain_item', [chain_name, item_name, quantity, order_limit, PLU, price])
+        conn.commit()
+        flash("Chain Item Creation Succeed!!")
+    except Exception as e:
+        print(e)
+        return Response(status=500)
+    finally:
+        cur.execute('select * from chain_item')
+        conn.commit()
+        result = cur.fetchall()
+        print(result)
+        conn.close()
+        return redirect(url_for('frontend_api.s3_home_admin_front'))
