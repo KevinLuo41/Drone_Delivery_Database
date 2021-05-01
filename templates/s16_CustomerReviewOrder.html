@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title> Customer Review Order </title>
+</head>
+<style>
+    h1 {
+        text-align: left;
+    }
+</style>
+
+<body>
+<h1> Customer Review Order  </h1>
+
+
+
+
+<form>
+    <div>
+        <label for="Chain">Chain:</label>
+        <input type="text" name="Chain" id="Chain" placeholder="Moss Market" required/>
+    </div>
+</form>
+
+<form>
+    <div>
+        <label for="Store">Store:</label>
+        <input type="text" name="Store" id="Store" placeholder="West Midtown" required/>
+    </div>
+</form>
+
+
+
+
+
+<div>
+    <h2 style="color: red;">{{Database Show}}</h2>
+</div>
+
+
+
+
+<form action="/s15_CustomerViewStoreItems.html">
+    <input type="submit" value="Back" />
+</form>
+
+<form>
+    <input type="submit" value="Place Order"/>
+</form>
+
+
+
+
+</body>
+
+
+</html>
