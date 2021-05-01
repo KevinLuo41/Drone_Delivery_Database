@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title> View Store Orders </title>
+</head>
+<style>
+    h1 {
+        text-align: left;
+    }
+</style>
+
+<body>
+<h1> View Store Orders  </h1>
+
+
+
+
+<form>
+    <div>
+        <label for="Dates">Dates:</label>
+        <input type="text" name="Dates" id="Dates" placeholder="1/20/2021" required/>
+        ---
+        <input type="text" name="Dates" id="Dates" placeholder="1/31/2021" required/>
+    </div>
+</form>
+
+
+
+
+
+
+
+<div>
+    <h2 style="color: red;">{{Database Show}}</h2>
+</div>
+
+
+
+
+<form action="/s15_CustomerViewStoreItems.html">
+    <input type="submit" value="Back" />
+</form>
+
+<form>
+    <input type="submit" value="Reset"/>
+</form>
+
+<form>
+    <input type="submit" value="Filter"/>
+</form>
+
+<form>
+    <input type="submit" value="View Order Details"/>
+</form>
+
+<form>
+    <input type="submit" value="Save"/>
+</form>
+
+
+</body>
+
+
+</html>
