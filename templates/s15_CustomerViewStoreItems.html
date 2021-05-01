@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title> Customer View Store Items </title>
+</head>
+<style>
+    h1 {
+        text-align: left;
+    }
+</style>
+
+<body>
+<h1> Customer View Store Items </h1>
+
+
+
+
+<form>
+    <div>
+        <label for="Username"> Username:</label>
+        <input type="text" name="Username" id="Username" placeholder="SpaceCowboy" required/>
+    </div>
+</form>
+
+
+
+
+<form>
+    <div>
+        <label for="Chaine">Chaine:</label>
+        <select name="Chaine" id="Chaine">
+            <option value="Moss Market" selected disabled> Moss Market </option>
+        </select>
+    </div>
+</form>
+
+
+
+
+
+<form>
+    <div>
+        <label for="Category">Category:</label>
+        <select name="Category" id="Category">
+            <option value="NULL" selected disabled> NULL </option>
+        </select>
+    </div>
+</form>
+
+
+<form>
+    <div>
+        <label for="Store">Store:</label>
+        <select name="Store" id="Store">
+            <option value="West Midtown" selected disabled> West Midtown </option>
+        </select>
+    </div>
+</form>
+
+
+
+<div>
+    <h2 style="color: red;">{{Database Show}}</h2>
+</div>
+
+
+
+
+<form>
+    <input type="submit" value="Cancel Order"/>
+</form>
+
+
+<form>
+    <input type="submit" value="Place Order"/>
+</form>
+
+
+</body>
+
+
+</html>
