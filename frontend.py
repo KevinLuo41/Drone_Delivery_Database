@@ -83,3 +83,11 @@ def s9_create_chainitem():
 def s11_view_drone_view():
     # print('in front')
     return render_template("s11_view_drone.html")
+
+
+# S12
+@frontend_api.route('/s12_manage_store', methods=['GET'])
+def s12_manage_store():
+    chain_name = backend.get_chain_name()
+    store_name = backend.get_store_name(chain_name)
+    return render_template("s12_manage_store.html", chain_name=chain_name, store_name=store_name)

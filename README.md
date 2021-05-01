@@ -12,6 +12,7 @@
 4/29:
 - S8 Complete Admin View Customers (s8)
 - S11 Complete Manager View Drones
+- S12 Complete Manager View Stores
 
 
 ## Wen Li：

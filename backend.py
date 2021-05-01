@@ -359,3 +359,68 @@ def s11_view_drone():
         print(result_list)
         conn.close()
     return render_template("s11_view_drone.html", result=result_list, id=drone_id, r=radius)
+
+
+@backend_api.route('/s12_manage_store', methods=["POST"])
+def s12_manage_store():
+    username = config.USERNAME # current user
+    chain_name = get_chain_name()
+    store_name = get_store_name(chain_name)
+
+    print(request.form)
+    range_min = request.form['min']
+    range_max = request.form['max']
+    range_min = None if range_min == '' else int(range_min)
+    range_max  = None if range_max == '' else int(range_max) 
+    select_store = request.form['store_name']
+    if select_store == 'NULL': select_store = None
+    print(username)
+    print(select_store)
+    print(range_min)
+    print(range_max)
+    stores = get_stores(username, select_store, range_min, range_max)
+    return render_template("s12_manage_store.html", min=range_min, max=range_max, sstore=select_store, chain_name=chain_name, store_name=store_name, stores=stores)
+
+
+def get_chain_name():
+    mgr_username = config.USERNAME # current user
+    conn = db.connect()
+    cur = conn.cursor()
+    result_list = []
+    cur.execute('SELECT ChainName FROM grocery_drone_delivery.MANAGER where Username = %s', [mgr_username])
+    conn.commit()
+    result = cur.fetchall()
+    chain_name = result[0][0]
+    print(chain_name)
+    return chain_name
+
+def get_store_name(chain_name):
+    mgr_username = config.USERNAME # current user
+    conn = db.connect()
+    cur = conn.cursor()
+    result_list = []
+    cur.execute('SELECT StoreName FROM grocery_drone_delivery.STORE where ChainName = %s', [chain_name])
+    conn.commit()
+    result = cur.fetchall()
+    result_list = [item[0] for item in result]
+    print(result_list)
+    return result_list
+
+def get_stores(manager, store_name, _min=None, _max=None):
+    conn = db.connect()
+    cur = conn.cursor()
+    result_list = []
+    try:
+        cur.callproc('manager_manage_stores', [manager, store_name, _min, _max]) # 12a
+        conn.commit()
+    except Exception as e:
+        print(e)
+        return Response(status=500)
+    finally:
+        cur.execute('select * from manager_manage_stores_result')
+        conn.commit()
+        result = cur.fetchall()
+        result_list = list(result)
+        print(result_list)
+        conn.close()
+    return result_list

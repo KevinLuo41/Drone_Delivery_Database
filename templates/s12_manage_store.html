@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-    <title> Manage chain's Stores </title>
+    <title> Manage Chain's Stores </title>
 </head>
 <style>
     h1 {
@@ -10,70 +11,79 @@
 </style>
 
 <body>
-<h1> Manage chain's Stores </h1>
+    <h1> Manage Chain's Stores </h1>
 
 
+    <h3>Chain: {{chain_name}}</h3>
 
 
-<form>
-    <div>
-        <label for="Chain"> Chain:</label>
-        <input type="text" name="Chain" id="Chain" placeholder="Moss Market" required/>
-    </div>
-</form>
+    <form action="/s12_manage_store" method="POST">
+        <div>
+            <label for="Total Range">Total Range:</label>
+            <input type="text" name="min" size="5" placeholder="min" {% if min %}value={{min}} {% endif %} />
+            <span>-</span>
+            <input type="text" name="max" size="5" placeholder="max" {% if max %}value={{max}} {% endif %} />
+
+            <label for="Name">Name:</label>
+            <select name="store_name" id="Name">
+                {% if sstore %}
+                <option value="{{sstore}}"> {{sstore}} </option>
+                {% endif %}
+                <option value="NULL"> NULL </option>
+                {% for name in store_name %}
+                <option value="{{ name }}">{{ name }}</option>
+                {% endfor %}
+            </select>
+
+            <input type="submit" value="Filter" />
+        </div>
+    </form>
 
 
+    <form action="/s12_manage_store" method="GET">
+        <input type="submit" value="Reset" />
+    </form>
 
-<form>
-    <div>
-        <label for="Total Range">Total Range:</label>
-        <input type="text" name="Total Range" id="Radius" required/>
-        <h3> --- </h3>
-        <input type="text" name="Total Range" id="Radius" required/>
-    </div>
-</form>
+    {% if stores %}
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Address</th>
+            <th>Orders</th>
+            <th>Employees</th>
+            <th>Total</th>
+        </tr>
+        {% for row in stores %}
+        <tr>
+            <td>{{ row[0] }}</td>
+            <td>{{ row[1] }}</td>
+            <td>{{ row[2] }}</td>
+            <td>{{ row[3] }}</td>
+            <td>{{ row[4] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% endif %}
 
-
-
-
-<form>
-    <div>
-        <label for="Name">Name:</label>
-        <select name="Name" id="Name">
-            <option value="NULL" selected disabled> NULL </option>
-        </select>
-    </div>
-</form>
-
-
-
-
-<div>
-    <h2 style="color: red;">{{Database Show}}</h2>
-</div>
-
-
+    <form action="/s3_home_manager" method="GET">
+        <input type="submit" value="Back" />
+    </form>
 
 
+    <script>
+        const getCellValue = (tr, idx) => tr.children[idx].innerText || tr.children[idx].textContent;
 
-<form action="/s11_ChainManager_ViewDrones.html">
-    <input type="submit" value="Back" />
-</form>
+        const comparer = (idx, asc) => (a, b) => ((v1, v2) =>
+            v1 !== '' && v2 !== '' && !isNaN(v1) && !isNaN(v2) ? v1 - v2 : v1.toString().localeCompare(v2)
+        )(getCellValue(asc ? a : b, idx), getCellValue(asc ? b : a, idx));
 
-
-
-
-<form>
-    <input type="submit" value="Reset"/>
-</form>
-
-
-<form>
-    <input type="submit" value="Filter"/>
-</form>
-
-
+        document.querySelectorAll('th').forEach(th => th.addEventListener('click', (() => {
+            const table = th.closest('table');
+            Array.from(table.querySelectorAll('tr:nth-child(n+2)'))
+                .sort(comparer(Array.from(th.parentNode.children).indexOf(th), this.asc = !this.asc))
+                .forEach(tr => table.appendChild(tr));
+        })));
+    </script>
 </body>
-
 
 </html>
