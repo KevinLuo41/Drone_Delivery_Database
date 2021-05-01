@@ -160,9 +160,9 @@ def s2_register_back():
                     # conn.close()
                     return redirect(url_for("frontend_api.s1_login_front"))
             else:
-                result = cur.execute("select * from chain where chainname = %s", [chain])
+                result = cur.execute("select * from chain natural left join manager where chainname = %s and  username is null", [chain])
                 if not result:
-                    flash("incorrect chain name!!")
+                    flash("incorrect chain name or already has a manager!!")
                     return redirect(url_for("frontend_api.s2_register_front"))
                 else:
                     cur.callproc('register_employee', [username, password, fname, lname, street, city, state, zipcode])
@@ -175,6 +175,7 @@ def s2_register_back():
     except Exception as e:
         print(e)
         # flash(e)
+        return redirect(url_for("frontend_api.s2_register_front"))
     finally:
         conn.close()
         # return redirect(url_for("frontend_api.s2_register_front"))
