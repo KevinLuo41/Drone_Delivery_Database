@@ -339,7 +339,7 @@ def s11_view_drone():
     radius = request.form['radius']
     drone_id = None if drone_id == '' else int(drone_id)
     radius = None if radius == '' else int(radius) 
-    mgr_username = 'cbing101' # current user
+    mgr_username = config.USERNAME # current user
     conn = db.connect()
     cur = conn.cursor()
     result_list = []
