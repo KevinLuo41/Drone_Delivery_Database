@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-    <title> Chaiin Mamager View Drones </title>
+    <title> Chain Manager View Drones </title>
 </head>
 <style>
     h1 {
@@ -10,55 +11,70 @@
 </style>
 
 <body>
-<h1> Chaiin Mamager View Drones </h1>
+    <h1> Chain Manager View Drones </h1>
 
 
 
 
-<form>
-    <div>
-        <label for="Drone ID"> Drone ID:</label>
-        <input type="text" name="Drone ID" id="Drone ID" required/>
-    </div>
-</form>
+    <form action="/s11_view_drone" method="POST">
+        <div>
+            <label for="Drone ID">Drone ID:</label>
+            <input type="text" name="drone_id" id="Drone ID" oninput="value=value.replace(/[^\d]/g,'')" {% if id %}value={{id}}
+            {% endif %}/>
+
+            <label for="Radius">Radius:</label>
+            <input type="text" name="radius" id="Radius" oninput="value=value.replace(/[^\d]/g,'')" {% if r %}value={{r}}
+            {% endif %}/>
+
+            <input type="submit" value="Filter" />
+        </div>
+    </form>
+
+    {% if result %}
+    <table>
+        <tr>
+            <th>Drone ID</th>
+            <th>Operator</th>
+            <th>Radius</th>
+            <th>Zip Code</th>
+            <th>Status</th>
+        </tr>
+        {% for row in result %}
+        <tr>
+            <td>{{ row[0] }}</td>
+            <td>{{ row[1] }}</td>
+            <td>{{ row[2] }}</td>
+            <td>{{ row[3] }}</td>
+            <td>{{ row[4] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% endif %}
+
+    <form action="/s11_view_drone" method="GET">
+        <input type="submit" value="Reset" />
+    </form>
 
 
 
-<form>
-    <div>
-        <label for="Radius">Radius:</label>
-        <input type="text" name="Radius" id="Radius" required/>
-    </div>
-</form>
+    <form action="/s3_home_manager" method="GET">
+        <input type="submit" value="Back" />
+    </form>
 
-
-
-<form>
-    <input type="submit" value="Filter"/>
-</form>
-
-
-<div>
-    <h2 style="color: red;">{{Database Show}}</h2>
-</div>
-
-
-
-
-
-<form action="/s10_ChainManager_VewDroneTechnicians.html">
-    <input type="submit" value="Back" />
-</form>
-
-
-
-
-<form>
-    <input type="submit" value="Reset"/>
-</form>
-
-
-
+    <script>
+        const getCellValue = (tr, idx) => tr.children[idx].innerText || tr.children[idx].textContent;
+    
+        const comparer = (idx, asc) => (a, b) => ((v1, v2) =>
+            v1 !== '' && v2 !== '' && !isNaN(v1) && !isNaN(v2) ? v1 - v2 : v1.toString().localeCompare(v2)
+        )(getCellValue(asc ? a : b, idx), getCellValue(asc ? b : a, idx));
+    
+        document.querySelectorAll('th').forEach(th => th.addEventListener('click', (() => {
+            const table = th.closest('table');
+            Array.from(table.querySelectorAll('tr:nth-child(n+2)'))
+                .sort(comparer(Array.from(th.parentNode.children).indexOf(th), this.asc = !this.asc))
+                .forEach(tr => table.appendChild(tr));
+        })));
+    </script>
 
 </body>
 

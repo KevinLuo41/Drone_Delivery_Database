@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Home Screen</title>
 </head>
@@ -10,28 +11,29 @@
 </style>
 
 <body>
-<h1> Chain Manager Home </h1>
+    <h1> Chain Manager Home </h1>
 
 
-<div>
-    <input type="submit" value="View Drone Technicians"/>
+    <div>
+        <input type="submit" value="View Drone Technicians" />
+    </div>
 
-    <input type="submit" value="View Drones"/>
-</div>
-<div>
+    <div>
+        <form action="/s11_view_drone" method="GET">
+            <input type="submit" value="View Drones" />
+        </form>
+    </div>
 
-</div>
+    <div>
+        <form action="s9_create_chainitem">
+            <input type="submit" value="Create Chain Item" />
+        </form>
+        <input type="submit" value="Manager Stores" />
+    </div>
 
-<div>
-    <form action="s9_create_chainitem">
-        <input type="submit" value="Create Chain Item"/>
-    </form>
-    <input type="submit" value="Manager Stores"/>
-</div>
-
-<div>
-    <a href="/"> Logout </a>
-</div>
+    <div>
+        <a href="/"> Logout </a>
+    </div>
 
 </body>
 

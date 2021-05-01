@@ -11,6 +11,7 @@
 ## Maiqi Ding
 4/29:
 - S8 Complete Admin View Customers (s8)
+- S11 Complete Manager View Drones
 
 
 ## Wen Li：

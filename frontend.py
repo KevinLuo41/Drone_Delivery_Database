@@ -76,3 +76,10 @@ def s8_admin_view_customers_view():
 def s9_create_chainitem():
     chain_name, item_list, new_PLU = backend.s9_front_helper()
     return render_template("s9_create_chainitem.html", chain_name=chain_name, item_list=item_list, new_PLU=new_PLU)
+
+
+# S11
+@frontend_api.route('/s11_view_drone', methods=['GET'])
+def s11_view_drone_view():
+    # print('in front')
+    return render_template("s11_view_drone.html")

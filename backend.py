@@ -329,3 +329,33 @@ def s9_create_chainitem_back():
         print(result)
         conn.close()
         return redirect(url_for('frontend_api.s3_home_admin_front'))
+
+
+@backend_api.route('/s11_view_drone', methods=["POST"])
+def s11_view_drone():
+    print(request.form)
+    print("in filter")
+    drone_id = request.form['drone_id']
+    radius = request.form['radius']
+    drone_id = None if drone_id == '' else int(drone_id)
+    radius = None if radius == '' else int(radius) 
+    mgr_username = 'cbing101' # current user
+    conn = db.connect()
+    cur = conn.cursor()
+    result_list = []
+    try:
+        cur.callproc('manager_view_drones', [mgr_username, drone_id, radius]) # 11a
+        conn.commit()
+        # flash("Customers Filter Succeed!")
+    except Exception as e:
+        # flash(e)
+        print(e)
+        return Response(status=500)
+    finally:
+        cur.execute('select * from manager_view_drones_result')
+        conn.commit()
+        result = cur.fetchall()
+        result_list = list(result)
+        print(result_list)
+        conn.close()
+    return render_template("s11_view_drone.html", result=result_list, id=drone_id, r=radius)
