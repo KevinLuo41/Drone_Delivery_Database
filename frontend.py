@@ -1,5 +1,5 @@
 from flask import Blueprint, request, render_template
-import backend
+import backend, config
 
 frontend_api = Blueprint('frontend_api', __name__)
 
@@ -91,3 +91,12 @@ def s12_manage_store():
     chain_name = backend.get_chain_name()
     store_name = backend.get_store_name(chain_name)
     return render_template("s12_manage_store.html", chain_name=chain_name, store_name=store_name)
+
+
+# S13
+@frontend_api.route('/s13_change_card', methods=['GET'])
+def s13_change_card():
+    username = config.USERNAME
+    print(username)
+    fname, lname = backend.get_name(username)
+    return render_template("s13_change_card.html", username=username, fname=fname, lname=lname)

@@ -424,3 +424,41 @@ def get_stores(manager, store_name, _min=None, _max=None):
         print(result_list)
         conn.close()
     return result_list
+
+
+@backend_api.route('/s13_change_card', methods=["POST"])
+def s13_change_card():
+    username = config.USERNAME # current user
+    print(request.form)
+    card_number = request.form['card_number']
+    cvv = int(request.form['cvv'])
+    year = request.form['year']
+    month = request.form['month']
+    conn = db.connect()
+    cur = conn.cursor()
+    date = year + '-' + month + '-' + '01'
+    try:
+        cur.callproc('customer_change_credit_card_information', [username, card_number, cvv, date]) # 13a
+        conn.commit()
+    except Exception as e:
+        print(e)
+        return Response(status=500)
+    finally:
+        conn.close()
+    return redirect(url_for('frontend_api.s13_change_card'))
+
+
+def get_name(username):
+    conn = db.connect()
+    cur = conn.cursor()
+    try:
+        cur.execute('SELECT FirstName, LastName FROM grocery_drone_delivery.USERS where Username = %s', [username])
+        conn.commit()
+    except Exception as e:
+        print(e)
+        return Response(status=500)
+    finally:
+        result = cur.fetchall()
+        print(result)
+        conn.close()
+    return result[0][0], result[0][1]
