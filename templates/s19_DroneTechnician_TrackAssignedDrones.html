@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title> My Assigned Drones </title>
+</head>
+<style>
+    h1 {
+        text-align: left;
+    }
+</style>
+
+<body>
+<h1> My Assigned Drones </h1>
+
+
+
+
+<form>
+    <div>
+        <label for="Drone ID">Drone ID:</label>
+        <input type="text" name="Drone ID" id="Drone ID"  required/>
+    </div>
+</form>
+
+
+<form>
+    <div>
+        <label for="Status">Status:</label>
+        <select name="Status" id="Status">
+            <option value="NULL" selected disabled> NULL </option>
+        </select>
+    </div>
+</form>
+
+
+
+<div>
+    <h2 style="color: red;">{{Database Show}}</h2>
+</div>
+
+
+
+
+<form action="s18_DroneTechnician_ViewOrderDetails.html">
+    <input type="submit" value="Back" />
+</form>
+
+<form>
+    <input type="submit" value="Reset"/>
+</form>
+
+<form>
+    <input type="submit" value="Filter"/>
+</form>
+
+</body>
+
+
+</html>
