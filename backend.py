@@ -102,7 +102,82 @@ def s1_login_back():
     if type == 'admin':
         return redirect(url_for('frontend_api.s3_home_admin_front'))
 
+@backend_api.route('/s2_register', methods=["POST"])
+def s2_register_back():
+    print(request.form)
+    lname = request.form['lname']
+    fname = request.form['fname']
+    username = request.form['username']
+    password = request.form['password']
+    confirm = request.form['confirm']
+    street = request.form['street']
+    city = request.form['city']
+    state = request.form['state']
+    zipcode = request.form['zipcode']
 
+
+    card1 = request.form['card1']
+    card2 = request.form['card2']
+    card3 = request.form['card3']
+    card4 = request.form['card4']
+    cvv = request.form['cvv']
+    month = request.form['month']
+    year = request.form['year']
+
+    chain = request.form['chain']
+    store = request.form['store']
+
+    if len(password)<8:
+        flash("password must contain at least 8 characters!!")
+        return redirect(url_for("frontend_api.s2_register_front"))
+    if password != confirm:
+        flash("password and confirm password should be same!!")
+        return redirect(url_for("frontend_api.s2_register_front"))
+
+    conn = db.connect()
+    cur = conn.cursor()
+    try:
+        if card1:
+            card = card1+" "+card2+" "+card3+" "+card4
+            exp=year+"-"+month+"-01"
+            cur.callproc('register_customer', [username,password,fname,lname,street,city,state,zipcode,card,cvv,exp])
+            conn.commit()
+            flash("register succeed!")
+            # conn.close()
+            return redirect(url_for("frontend_api.s1_login_front"))
+
+        if chain:
+            if store:
+                result = cur.execute("select * from store where chainname = %s and storename =%s",[chain,store])
+                if not result:
+                    flash("incorrect chain-store combination")
+                    return redirect(url_for("frontend_api.s2_register_front"))
+                else:
+                    cur.callproc('register_employee',[username, password, fname, lname, street, city, state, zipcode])
+                    cur.execute("insert into drone_tech values(%s,%s,%s)",[username,store,chain])
+                    conn.commit()
+                    flash("register succeed!")
+                    # conn.close()
+                    return redirect(url_for("frontend_api.s1_login_front"))
+            else:
+                result = cur.execute("select * from chain where chainname = %s", [chain])
+                if not result:
+                    flash("incorrect chain name!!")
+                    return redirect(url_for("frontend_api.s2_register_front"))
+                else:
+                    cur.callproc('register_employee', [username, password, fname, lname, street, city, state, zipcode])
+                    cur.execute("insert into manager values(%s,%s)", [username, chain])
+                    conn.commit()
+                    flash("register succeed!")
+                    # conn.close()
+                    return redirect(url_for("frontend_api.s1_login_front"))
+
+    except Exception as e:
+        print(e)
+        # flash(e)
+    finally:
+        conn.close()
+        # return redirect(url_for("frontend_api.s2_register_front"))
 
 
 @backend_api.route('/s4_create_chain', methods=["POST"])
@@ -446,7 +521,6 @@ def s13_change_card():
     finally:
         conn.close()
     return redirect(url_for('frontend_api.s13_change_card'))
-
 
 def get_name(username):
     conn = db.connect()
