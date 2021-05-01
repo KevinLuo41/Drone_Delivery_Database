@@ -45,81 +45,7 @@ def initial():
 
     return redirect(url_for('frontend_api.s1_login_front'))
 
-@backend_api.route('/s2_login', methods=["POST"])
-def s2_login_back():
-    # print("asdf")
-    global USERNAME, USERTYPE
-    fname = request.form['fname']
-    lname = request.form['lname']
-    username = request.form['username']
-    password = request.form['password']
-    confrim = request.form['confrim']
-    street = request.form['street']
-    lname = request.form['city']
-    lname = request.form['state']
-
-    card1 = request.form['card1']
-    card2 = request.form['card2']
-    card3 = request.form['card3']
-    card4 = request.form['card4']
-
-    month = request.form['month']
-    year = request.form['year']
-    cvv = request.form['cvv']
-
-
-
-
-    if not password or not username:
-        flash("Empty username or password!!")
-        return redirect(url_for('frontend_api.s1_login_front'))
-
-    conn = db.connect()
-    cur = conn.cursor()
-
-    try:
-        cur.execute('SELECT * FROM users where username = %s and (pass = MD5(%s) or pass = %s)',
-                    [username,password,password])
-        conn.commit()
-        result = cur.fetchall()
-        if not result:
-            flash('incorrect username or password')
-            return redirect(url_for('frontend_api.s1_login_front'))
-        # print(result)
-
-        type =None
-        cur.execute('select * from admin where username = %s',[username])
-        if cur.fetchall(): type = "admin"
-
-        cur.execute('select * from customer where username = %s',[username])
-        if cur.fetchall(): type = "customer"
-
-        cur.execute('select * from manager where username = %s',[username])
-        if cur.fetchall(): type = "manager"
-
-        cur.execute('select * from drone_tech where username = %s',[username])
-        if cur.fetchall(): type = "tech"
-
-    except Exception as e:
-        print(e)
-        return Response(status=500)
-    finally:
-        conn.close()
-
-    print('type', type)
-    config.USERNAME = username
-    config.USERTYPE = type
-
-    if type == 'customer':
-        return redirect(url_for('frontend_api.s3_home_customer_front'))
-    if type == 'tech':
-        return redirect(url_for('frontend_api.s3_home_tech_front'))
-    if type == 'manager':
-        return redirect(url_for('frontend_api.s3_home_manager_front'))
-    if type == 'admin':
-        return redirect(url_for('frontend_api.s3_home_admin_front'))
-
-@backend_api.route('/s1_register', methods=["POST"])
+@backend_api.route('/s1_login', methods=["POST"])
 def s1_login_back():
     # print("asdf")
     global USERNAME, USERTYPE
@@ -175,6 +101,8 @@ def s1_login_back():
         return redirect(url_for('frontend_api.s3_home_manager_front'))
     if type == 'admin':
         return redirect(url_for('frontend_api.s3_home_admin_front'))
+
+
 
 
 @backend_api.route('/s4_create_chain', methods=["POST"])

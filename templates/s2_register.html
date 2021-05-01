@@ -7,7 +7,8 @@
 
 <body>
 <h1>Register</h1>
-<form action="/s2_register" method="POST">
+
+<form action="/s2_register" id="registerform" method="POST">
     <div>
         <label for="fname">First Name:</label>
         <input type="text" name="fname" id="fname" placeholder="First Name" required/>
@@ -106,57 +107,65 @@
     </div>
 
     <div class="tab">
-        <button class="tablinks" onclick="option(event, 'Customer')" id="defaultOpen">Customer</button>
-        <button class="tablinks" onclick="option(event, 'Employee')">Employee</button>
+        <button class="tablinks" type="button" onclick="option(event, 'Customer')" id="defaultOpen">Customer</button>
+        <button class="tablinks" type="button" onclick="option(event, 'Employee')">Employee</button>
     </div>
 
     <!-- Customer -->
     <div id="Customer" class="tabcontent">
-<span> Card Number:
-    <input type="text" name="card1" id="card1" placeholder="XXXX" maxlength="4" size="5"/>
-    <span>-</span>
-    <input type="text" name="card2" id="card2" placeholder="XXXX" maxlength="4" size="5"/>
-    <span>-</span>
-    <input type="text" name="card3" id="card3" placeholder="XXXX" maxlength="4" size="5"/>
-    <span>-</span>
-    <input type="text" name="card4" id="card4" placeholder="XXXX" maxlength="4" size="5"/>
-</span>
+        <span> Card Number:
+            <input type="text" name="card1" id="card1" placeholder="XXXX" maxlength="4" size="5"/>
+            <span>-</span>
+            <input type="text" name="card2" id="card2" placeholder="XXXX" maxlength="4" size="5"/>
+            <span>-</span>
+            <input type="text" name="card3" id="card3" placeholder="XXXX" maxlength="4" size="5"/>
+            <span>-</span>
+            <input type="text" name="card4" id="card4" placeholder="XXXX" maxlength="4" size="5"/>
+        </span>
 
         <br/>
+
         <span> Exp Date:
-        <input type="text" name="month" id="month" placeholder="MM" maxlength="2" size="3"/>
-        <span>/</span>
-        <input type="text" name="year" id="year" placeholder="YYYY" maxlength="4" size="5"/>
-    </span>
+            <input type="text" name="month" id="month" placeholder="MM" maxlength="2" size="3"/>
+            <span>/</span>
+            <input type="text" name="year" id="year" placeholder="YYYY" maxlength="4" size="5"/>
+        </span>
 
         <div>
             <label for="cvv">CVV:</label>
-            <input type="text" name="cvv" id="cvv" placeholder="XXX" size=4 required/>
+            <input type="text" name="cvv" id="cvv" placeholder="XXX" maxlength="3" size="4"/>
         </div>
     </div>
     <!-- Employee -->
     <div id="Employee" class="tabcontent">
         <div>
             <label for="chain">Associated Grocery Chain:</label>
-            <input type="text" name="chain" id="chain" placeholder="Chain Name" required/>
+            <input type="text" name="chain" id="chain" placeholder="Chain Name"/>
         </div>
 
         <div>
             <label for="store">Associated Store Name:</label>
-            <input type="text" name="store" id="store" placeholder="Store Name" required/>
+            <input type="text" name="store" id="store" placeholder="Store Name"/>
         </div>
     </div>
 </form>
 
 <div>
-    <input type="submit" value="Register"/>
+    <input type="submit" value="Register" name="type" form="registerform"/>
 </div>
+
+<div>
+    <a href="/"> Back </a>
+</div>
+
 
 <script>
     function option(evt, userTpye) {
         var i, tabcontent, tablinks;
         tabcontent = document.getElementsByClassName("tabcontent");
+        console.log(tabcontent);
         for (i = 0; i < tabcontent.length; i++) {
+
             tabcontent[i].style.display = "none";
         }
         tablinks = document.getElementsByClassName("tablinks");
@@ -169,6 +178,7 @@
 
     document.getElementById("defaultOpen").click(); // default: Customer
 </script>
+
 
 </body>
 
