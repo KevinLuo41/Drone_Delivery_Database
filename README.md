@@ -12,6 +12,9 @@
 - S2 Complete Register
 - S14 Complete View Order history
 
+5/2:
+- S19 Complete track drones
+
 ## Maiqi Ding
 4/29:
 - S8 Complete Admin View Customers (s8)
