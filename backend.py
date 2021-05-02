@@ -644,6 +644,22 @@ def s15_get_category():
     print(data)
     return jsonify(data)
 
+@backend_api.route('/s15_get_items', methods=["POST"])
+def s15_get_items():
+    chain = request.form["chain"]
+    category = request.form["category"]
+    conn = db.connect()
+    cur = conn.cursor()
+    if category == "":
+        cur.execute('select ChainItemName, Orderlimit from chain_item as ci where ci.ChainName = %s', [chain])
+    else:
+        cur.execute('select ChainItemName, Orderlimit from chain_item as ci, item as i where ci.chainitemname = i.itemname and ci.ChainName = %s and i.itemtype = %s', [chain, category])
+    conn.commit()
+
+    result = cur.fetchall()
+    data = [{"name":x[0],"quantity":x[1]} for x in result]
+    print(data)
+    return jsonify(data)
 
 @backend_api.route('/s16_review_order', methods=['GET'])
 def s16_review_order_back():
@@ -690,3 +706,5 @@ def s19_track_drone_back():
         conn.close()
 
     return render_template("s19_track_drone.html", drones=drones, status=status)
+
+

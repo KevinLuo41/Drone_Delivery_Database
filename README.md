@@ -25,4 +25,7 @@
 - S7 Complete Create Item
 - S9 Complete Create Chain Item(JS might be needed to check existence of chain item combination)
 
+05/02
+- S15 Working on View Store Items(not completed yet)
+
 
