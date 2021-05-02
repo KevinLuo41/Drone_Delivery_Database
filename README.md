@@ -4,10 +4,13 @@
 - S6 Complete Create Drone
 - S5 Complete Create Store
 - S4 Complete Create Chain
+ 
 4/30:
 - S1 Complete Login
+
 5/1:
 - S2 Complete Register
+- S14 Complete View Order history
 
 ## Maiqi Ding
 4/29:
