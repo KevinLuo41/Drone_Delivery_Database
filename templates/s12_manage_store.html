@@ -11,40 +11,43 @@
 </style>
 
 <body>
-    <h1> Manage Chain's Stores </h1>
+<h1> Manage Chain's Stores </h1>
 
 
-    <h3>Chain: {{chain_name}}</h3>
+<h3>Chain: {{ chain_name }}</h3>
 
 
-    <form action="/s12_manage_store" method="POST">
-        <div>
-            <label for="Total Range">Total Range:</label>
-            <input type="text" name="min" size="5" placeholder="min" {% if min %}value={{min}} {% endif %} />
-            <span>-</span>
-            <input type="text" name="max" size="5" placeholder="max" {% if max %}value={{max}} {% endif %} />
+<form action="/s12_manage_store" method="POST">
+    <div>
+        <label for="Total Range">Total Range:</label>
+        <input type="text" name="min" size="5" placeholder="min" {% if min %}value={{ min }} {% endif %}/>
+        <span>-</span>
+        <input type="text" name="max" size="5" placeholder="max" {% if max %}value={{ max }} {% endif %}/>
 
-            <label for="Name">Name:</label>
-            <select name="store_name" id="Name">
-                {% if sstore %}
-                <option value="{{sstore}}"> {{sstore}} </option>
+        <label for="Name">Name:</label>
+        <select name="store_name" id="Name">
+
+            <option value="NULL"> ALL</option>#}
+            {% for item in store_name %}
+
+                {% if item == sstore %}
+                    <option value="{{ item }}" selected>{{ item }}</option>
+                {% else %}
+                    <option value="{{ item }}">{{ item }}</option>
                 {% endif %}
-                <option value="NULL"> NULL </option>
-                {% for name in store_name %}
-                <option value="{{ name }}">{{ name }}</option>
-                {% endfor %}
-            </select>
+            {% endfor %}
+        </select>
 
-            <input type="submit" value="Filter" />
-        </div>
-    </form>
+        <input type="submit" value="Filter"/>
+    </div>
+</form>
 
 
-    <form action="/s12_manage_store" method="GET">
-        <input type="submit" value="Reset" />
-    </form>
+<form action="/s12_manage_store" method="GET">
+    <input type="submit" value="Reset"/>
+</form>
 
-    {% if stores %}
+{% if stores %}
     <table>
         <tr>
             <th>Name</th>
@@ -54,36 +57,36 @@
             <th>Total</th>
         </tr>
         {% for row in stores %}
-        <tr>
-            <td>{{ row[0] }}</td>
-            <td>{{ row[1] }}</td>
-            <td>{{ row[2] }}</td>
-            <td>{{ row[3] }}</td>
-            <td>{{ row[4] }}</td>
-        </tr>
+            <tr>
+                <td>{{ row[0] }}</td>
+                <td>{{ row[1] }}</td>
+                <td>{{ row[2] }}</td>
+                <td>{{ row[3] }}</td>
+                <td>{{ row[4] }}</td>
+            </tr>
         {% endfor %}
     </table>
-    {% endif %}
+{% endif %}
 
-    <form action="/s3_home_manager" method="GET">
-        <input type="submit" value="Back" />
-    </form>
+<form action="/s3_home_manager" method="GET">
+    <input type="submit" value="Back"/>
+</form>
 
 
-    <script>
-        const getCellValue = (tr, idx) => tr.children[idx].innerText || tr.children[idx].textContent;
+<script>
+    const getCellValue = (tr, idx) => tr.children[idx].innerText || tr.children[idx].textContent;
 
-        const comparer = (idx, asc) => (a, b) => ((v1, v2) =>
+    const comparer = (idx, asc) => (a, b) => ((v1, v2) =>
             v1 !== '' && v2 !== '' && !isNaN(v1) && !isNaN(v2) ? v1 - v2 : v1.toString().localeCompare(v2)
-        )(getCellValue(asc ? a : b, idx), getCellValue(asc ? b : a, idx));
+    )(getCellValue(asc ? a : b, idx), getCellValue(asc ? b : a, idx));
 
-        document.querySelectorAll('th').forEach(th => th.addEventListener('click', (() => {
-            const table = th.closest('table');
-            Array.from(table.querySelectorAll('tr:nth-child(n+2)'))
-                .sort(comparer(Array.from(th.parentNode.children).indexOf(th), this.asc = !this.asc))
-                .forEach(tr => table.appendChild(tr));
-        })));
-    </script>
+    document.querySelectorAll('th').forEach(th => th.addEventListener('click', (() => {
+        const table = th.closest('table');
+        Array.from(table.querySelectorAll('tr:nth-child(n+2)'))
+            .sort(comparer(Array.from(th.parentNode.children).indexOf(th), this.asc = !this.asc))
+            .forEach(tr => table.appendChild(tr));
+    })));
+</script>
 </body>
 
 </html>
