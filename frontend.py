@@ -118,17 +118,18 @@ def s15_view_storeitems():
     return render_template("s15_view_storeitems.html",Username = username, chainlist = chainlist)
 
 
-def s16_review_order():
+@frontend_api.route('/s16_review_order', methods=['GET'])
+def s16_review_order_front():
     return render_template("s16_review_order.html")
 
-
-def s17_tech_vieworders():
+@frontend_api.route('/s17_tech_vieworders', methods=['GET'])
+def s17_tech_vieworders_front():
     return render_template("s17_tech_vieworders.html")
 
-
-def s18_tech_orderdetails():
+@frontend_api.route('/s18_tech_orderdetails', methods=['GET'])
+def s18_tech_orderdetails_front():
     return render_template("s18_tech_orderdetails.html")
 
-
-def s19_track_drone():
+@frontend_api.route('/s19_track_drone', methods=['GET'])
+def s19_track_drone_front():
     return render_template("s19_track_drone.html")

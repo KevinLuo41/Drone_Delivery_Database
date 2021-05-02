@@ -13,47 +13,70 @@
 <h1> My Assigned Drones </h1>
 
 
+<form action="s19_track_drone" method="POST">
+    <label for="id">Drone ID:</label>
+    <input type="text" name="id" id="id" pattern="[0-9]+"/>
 
+    <label for="status">Status:</label>
+    <select name="status" id="status">
+        {% for item in ["ALL","Busy","Available"] %}
 
-<form>
-    <div>
-        <label for="Drone ID">Drone ID:</label>
-        <input type="text" name="Drone ID" id="Drone ID"  required/>
-    </div>
+            {% if item == status %}
+                <option value="{{ item }}" selected>{{ item }}</option>
+            {% else %}
+                <option value="{{ item }}">{{ item }}</option>
+            {% endif %}
+        {% endfor %}
+
+    </select>
+
+    <input type="submit" value="Filter"/>
+
 </form>
 
-
-<form>
-    <div>
-        <label for="Status">Status:</label>
-        <select name="Status" id="Status">
-            <option value="NULL" selected disabled> NULL </option>
-        </select>
-    </div>
-</form>
-
-
-
-<div>
-    <h2 style="color: red;">{{Database Show}}</h2>
-</div>
-
-
-
-
-<form action="s18_DroneTechnician_ViewOrderDetails.html">
-    <input type="submit" value="Back" />
-</form>
-
-<form>
+<form action="s19_track_drone" method="GET">
     <input type="submit" value="Reset"/>
 </form>
 
-<form>
-    <input type="submit" value="Filter"/>
+
+<table>
+    <tr>
+        <th>Drone ID</th>
+        <th>Status</th>
+        <th>Radius</th>
+
+    </tr>
+    {% if drones %}
+        {% for row in drones %}
+            <tr>
+                <td>{{ row[0] }}</td>
+                <td>{{ row[1] }}</td>
+                <td>{{ row[2] }}</td>
+            </tr>
+        {% endfor %}
+    {% endif %}
+</table>
+
+
+<form action="/s3_home_tech">
+    <input type="submit" value="Back"/>
 </form>
 
-</body>
 
+</body>
+<script>
+    const getCellValue = (tr, idx) => tr.children[idx].innerText || tr.children[idx].textContent;
+
+    const comparer = (idx, asc) => (a, b) => ((v1, v2) =>
+            v1 !== '' && v2 !== '' && !isNaN(v1) && !isNaN(v2) ? v1 - v2 : v1.toString().localeCompare(v2)
+    )(getCellValue(asc ? a : b, idx), getCellValue(asc ? b : a, idx));
+
+    document.querySelectorAll('th').forEach(th => th.addEventListener('click', (() => {
+        const table = th.closest('table');
+        Array.from(table.querySelectorAll('tr:nth-child(n+2)'))
+            .sort(comparer(Array.from(th.parentNode.children).indexOf(th), this.asc = !this.asc))
+            .forEach(tr => table.appendChild(tr));
+    })));
+</script>
 
 </html>

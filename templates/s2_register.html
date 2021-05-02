@@ -130,26 +130,26 @@
     <!-- Customer -->
     <div id="Customer" class="tabcontent">
             <span> Card Number:
-                <input type="text" name="card1" id="card1" placeholder="XXXX" maxlength="4" size="5"/>
+                <input type="text" name="card1" id="card1" pattern="[0-9]+" placeholder="XXXX" maxlength="4" size="5" />
                 <span>-</span>
-                <input type="text" name="card2" id="card2" placeholder="XXXX" maxlength="4" size="5"/>
+                <input type="text" name="card2" id="card2" pattern="[0-9]+" placeholder="XXXX" maxlength="4" size="5"/>
                 <span>-</span>
-                <input type="text" name="card3" id="card3" placeholder="XXXX" maxlength="4" size="5"/>
+                <input type="text" name="card3" id="card3" pattern="[0-9]+" placeholder="XXXX" maxlength="4" size="5"/>
                 <span>-</span>
-                <input type="text" name="card4" id="card4" placeholder="XXXX" maxlength="4" size="5"/>
+                <input type="text" name="card4" id="card4" pattern="[0-9]+" placeholder="XXXX" maxlength="4" size="5"/>
             </span>
 
         <br/>
 
         <span> Exp Date:
-                <input type="text" name="month" id="month" placeholder="MM" maxlength="2" size="3"/>
+                <input type="text" name="month" id="month" pattern="[0-9]+" placeholder="MM" maxlength="2" size="3"/>
                 <span>/</span>
-                <input type="text" name="year" id="year" placeholder="YYYY" maxlength="4" size="5"/>
+                <input type="text" name="year" id="year" pattern="[0-9]+" placeholder="YYYY" maxlength="4" size="5"/>
             </span>
 
         <div>
             <label for="cvv">CVV:</label>
-            <input type="text" name="cvv" id="cvv" placeholder="XXX" maxlength="3" size="4"/>
+            <input type="text" name="cvv" id="cvv" pattern="[0-9]+" placeholder="XXX" maxlength="3" size="4"/>
         </div>
     </div>
     <!-- Employee -->

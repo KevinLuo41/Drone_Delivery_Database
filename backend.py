@@ -579,8 +579,8 @@ def s14_view_orderhistory():
         dict_data = dict(zip(row_headers, list(map(str, result[0]))))
         # return redirect(url_for('frontend_api.s3_home_admin_front'))
         print(dict_data)
-    print(ids,id)
-    return render_template("s14_view_orderhistory.html", username=username, ids=ids, id =id, data=dict_data)
+    print(ids, id)
+    return render_template("s14_view_orderhistory.html", username=username, ids=ids, id=id, data=dict_data)
 
 
 def get_order_id(username):
@@ -600,10 +600,13 @@ def get_order_id(username):
 
     return list_data
 
+
 def s15_get_chain():
     conn = db.connect()
     cur = conn.cursor()
-    cur.execute('select ChainName, StoreName from store where Zipcode = (select Zipcode from users where Username = %s)', [config.USERNAME])
+    cur.execute(
+        'select ChainName, StoreName from store where Zipcode = (select Zipcode from users where Username = %s)',
+        [config.USERNAME])
     conn.commit()
 
     result = cur.fetchall()
@@ -612,7 +615,7 @@ def s15_get_chain():
         if row[0] not in chainlist.keys():
             chainlist[str(row[0])] = []
         chainlist[row[0]].append(str(row[1]))
-    
+
     # cur.execute('', [config.USERNAME])
     # conn.commit()
 
@@ -621,19 +624,69 @@ def s15_get_chain():
     # for row in result:
     #     chainlist.append(row[0])
     # print(chainlist)
-    
+
     conn.close()
     return json.dumps(chainlist)
+
 
 @backend_api.route('/s15_get_category', methods=["POST"])
 def s15_get_category():
     chain = request.form["chain"]
     conn = db.connect()
     cur = conn.cursor()
-    cur.execute('select distinct(itemtype) from  (select * from chain_item as ci, item as i where ci.chainitemname = i.itemname and chainname = %s) as t order by itemtype; ', [chain])
+    cur.execute(
+        'select distinct(itemtype) from  (select * from chain_item as ci, item as i where ci.chainitemname = i.itemname and chainname = %s) as t order by itemtype; ',
+        [chain])
     conn.commit()
 
     result = cur.fetchall()
     data = [{"itemtype": x[0]} for x in result]
     print(data)
     return jsonify(data)
+
+
+@backend_api.route('/s16_review_order', methods=['GET'])
+def s16_review_order_back():
+    return render_template("s16_review_order.html")
+
+
+@backend_api.route('/s17_tech_vieworders', methods=['GET'])
+def s17_tech_vieworders_back():
+    return render_template("s17_tech_vieworders.html")
+
+
+@backend_api.route('/s18_tech_orderdetails', methods=['GET'])
+def s18_tech_orderdetails_back():
+    return render_template("s18_tech_orderdetails.html")
+
+
+@backend_api.route('/s19_track_drone', methods=['POST'])
+def s19_track_drone_back():
+    username = config.USERNAME  # current user
+    did = request.form["id"]
+    if did:
+        did = int(did)
+    else:
+        did = None
+    status = request.form["status"]
+    print(username, did, status)
+
+    conn = db.connect()
+    cur = conn.cursor()
+    drones = []
+    try:
+        cur.callproc('dronetech_assigned_drones', [username, did, status])
+        cur.execute('select * from dronetech_assigned_drones_result')
+        conn.commit()
+        result = cur.fetchall()
+        print(result)
+
+        for re in result:
+            drones.append(re)
+        print(drones)
+    except Exception as e:
+        print(e)
+    finally:
+        conn.close()
+
+    return render_template("s19_track_drone.html", drones=drones, status=status)
