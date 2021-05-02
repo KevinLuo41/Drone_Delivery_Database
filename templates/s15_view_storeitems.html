@@ -46,10 +46,13 @@
     <div>
         <label for="Category">Category:</label>
         <select name="Category" id="Category">
-            <option value="NULL" selected disabled> NULL </option>
+            <option value="" selected> NULL </option>
         </select>
     </div>
 </form>
+
+<div id = "Database">
+</div>
 
 <form>
     <input type="submit" value="Cancel Order"/>
@@ -111,9 +114,45 @@ $(function () {
 				dropdown.Category.removeAttr('disabled');
 			});
 		};
+		
+		function getitems(){
+		var chain = dropdown.Chain.val();
+		var category = dropdown.Category.val();
+		dropdown.Chain.attr('disabled');
+		dropdown.Category.attr('disabled');
+		$.post("{{ url_for('backend_api.s15_get_items') }}", {chain: chain, category: category}, function (data) {
+			console.log(data);
+			document.getElementById("Database").innerHTML = "";
+			for (var item in data){
+				console.log(data[item].name)
+
+				var label = document.createElement("label");
+				label.innerHTML = data[item].name;
+				
+				var select = document.createElement("select");
+				select.name = data[item].name;
+				select.id = data[item].name;
+				q = data[item].quantity;
+				for (var i = q; i >= 0; i--){
+					var option = document.createElement("option");
+					option.value = i;
+					option.text = i;
+					select.appendChild(option);
+				};
+				
+				var lineBreak = document.createElement('br');
+
+				document.getElementById("Database").appendChild(label).appendChild(select);
+			}
+			});
+		;}
 	// event listener to customer dropdown change
 		dropdown.Chain.on('change', function () {
 			getcategory();
+			getitems();
+		});
+		dropdown.Category.on('change', function () {
+			getitems();
 		});
 	<!-- }; -->
 });
