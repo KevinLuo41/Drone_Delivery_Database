@@ -624,3 +624,16 @@ def s15_get_chain():
     
     conn.close()
     return json.dumps(chainlist)
+
+@backend_api.route('/s15_get_category', methods=["POST"])
+def s15_get_category():
+    chain = request.form["chain"]
+    conn = db.connect()
+    cur = conn.cursor()
+    cur.execute('select distinct(itemtype) from  (select * from chain_item as ci, item as i where ci.chainitemname = i.itemname and chainname = %s) as t order by itemtype; ', [chain])
+    conn.commit()
+
+    result = cur.fetchall()
+    data = [{"itemtype": x[0]} for x in result]
+    print(data)
+    return jsonify(data)

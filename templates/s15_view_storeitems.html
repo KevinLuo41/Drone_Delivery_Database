@@ -3,6 +3,7 @@
 <head>
     <title> Customer View Store Items </title>
 </head>
+<script src="/static/jquery.js"></script>
 <style>
     h1 {
         text-align: left;
@@ -29,7 +30,7 @@
     <div>
         <label for="Chain">Chain:</label>
         <select name="Chain" id="Chain">
-			<option value="" selected = "selected">Select Chain</option>
+			<option value="0" selected = "selected">Select Chain</option>
         </select>
     </div>
     <div>
@@ -59,7 +60,7 @@
     <input type="submit" value="Place Order"/>
 </form>
 
-<script charset="ascii" type="text/javascript">
+<script charset="utf-8" type="text/javascript">
 var chainlist = JSON.parse({{ chainlist|tojson|safe }});
 console.log(chainlist)
 window.onload = function() {
@@ -77,7 +78,45 @@ window.onload = function() {
       storedrop.options[storedrop.options.length] = new Option(z[i], z[i]);
     }
   }
-}
+};
+$(function () {
+	var dropdown = {
+		Chain: $('#Chain'),
+		Category: $('#Category')
+	};
+
+	function getcategory() {
+		var chain = dropdown.Chain.val();
+		dropdown.Chain.attr('disabled');
+	
+		<!-- if (chain !== "Chain") { -->
+			<!-- dropdown.Category.empty().append( -->
+				<!-- $('<option>', { -->
+					<!-- value: "0", -->
+					<!-- text: "NULL", -->
+					<!-- disabled: "disabled" -->
+				<!-- }) -->
+			<!-- ); -->
+		
+			$.post("{{ url_for('backend_api.s15_get_category') }}", {chain: chain}, function (data) {
+				console.log(data);
+				data.forEach(function (item) {
+					dropdown.Category.append(
+						$('<option>', {
+							value: item.itemtype,
+							text: item.itemtype
+						})
+					);
+				});
+				dropdown.Category.removeAttr('disabled');
+			});
+		};
+	// event listener to customer dropdown change
+		dropdown.Chain.on('change', function () {
+			getcategory();
+		});
+	<!-- }; -->
+});
 </script>
 
 </body>
