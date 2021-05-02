@@ -100,3 +100,32 @@ def s13_change_card():
     print(username)
     fname, lname = backend.get_name(username)
     return render_template("s13_change_card.html", username=username, fname=fname, lname=lname)
+
+
+@frontend_api.route('/s14_view_orderhistory', methods=['GET'])
+def s14_view_orderhistory():
+    username = config.USERNAME
+    print(username)
+    ids = backend.get_order_id(username)
+    # print(ids)
+    return render_template("s14_view_orderhistory.html", username=username, id=-1, ids=ids, data=None)
+
+
+def s15_view_storeitems():
+    return render_template("s15_view_storeitems.html")
+
+
+def s16_review_order():
+    return render_template("s16_review_order.html")
+
+
+def s17_tech_vieworders():
+    return render_template("s17_tech_vieworders.html")
+
+
+def s18_tech_orderdetails():
+    return render_template("s18_tech_orderdetails.html")
+
+
+def s19_track_drone():
+    return render_template("s19_track_drone.html")

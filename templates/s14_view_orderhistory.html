@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title> Customer view Order History </title>
+</head>
+<style>
+    h1 {
+        text-align: left;
+    }
+</style>
+
+<body>
+<h1> Customer view Order History </h1>
+
+
+<table style="width:100%">
+    <tr>
+        <th>Username:</th>
+        <td id="Username">{{ username }}</td>
+    </tr>
+    <tr>
+        <th><label for="id">Order ID:</label></th>
+        <td>
+            <form id="idselect" action="/s14_view_orderhistory" method="POST">
+                <label for="id"></label>
+
+                <select name="id" id="id" onchange="this.form.submit();">
+                    {% if id==-1 %}
+                        <option selected disabled>XX</option>
+                    {% else %}
+                        <option disabled>XX</option>
+                    {% endif %}
+
+                    {% for item in ids %}
+
+                        {% if item == id %}
+                            <option value="{{ item }}" selected>{{ item }}</option>
+                        {% else %}
+                            <option value="{{ item }}">{{ item }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+
+            </form>
+
+        </td>
+    </tr>
+    <tr>
+        <th>Total Amount:</th>
+        <td id="amount">
+            {% if data %}
+                ${{ data["Total Amount"] }}
+            {% else %}
+                XX
+            {% endif %}
+        </td>
+    </tr>
+    <tr>
+        <th>Total Items:</th>
+        <td id="item">
+            {% if data %}
+                {{ data["Total Items"] }}
+            {% else %}
+                XX
+            {% endif %}
+        </td>
+    </tr>
+    <tr>
+        <th>Date of Purchase:</th>
+        <td id="date">
+            {% if data %}
+                {{ data["Date of Purchase"] }}
+            {% else %}
+                XXXX-XX-XX
+            {% endif %}
+        </td>
+    </tr>
+    <tr>
+        <th>Drone ID:</th>
+        <td id="did">
+            {% if data %}
+                {{ data["Drone ID"] }}
+            {% else %}
+                XX
+            {% endif %}
+        <td>
+    </tr>
+    <tr>
+        <th>Store Associate:</th>
+        <td id="tech">
+            {% if data %}
+                {{ data["Store Associate"] }}
+            {% else %}
+                XXX
+            {% endif %}</td>
+    </tr>
+    <tr>
+        <th>Status</th>
+        <td id="status">
+            {% if data %}
+                {{ data["Status"] }}
+            {% else %}
+                XXX
+            {% endif %}</td>
+    </tr>
+
+</table>
+
+
+<form action="/s3_home_customer">
+    <input type="submit" value="Back"/>
+</form>
+
+
+</body>
+
+
+</html>

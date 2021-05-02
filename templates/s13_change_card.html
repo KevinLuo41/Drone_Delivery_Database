@@ -11,87 +11,85 @@
 </style>
 
 <body>
-    <h1> Change Credit Card Information </h1>
+<h1> Change Credit Card Information </h1>
 
-    <form>
-        <div>
-            <label for="Username:">Username:</label>
-            <label>{{username}}</label>
-        </div>
-        <div>
-            <label for="First Name:">First Name:</label>
-            <label>{{fname}}</label>
-        </div>
-        <div>
-            <label for="Last Name:">Last Name:</label>
-            <label>{{lname}}</label>
-        </div>
-    </form>
+<form>
+    <div>
+        <label for="Username:">Username:</label>
+        <label>{{ username }}</label>
+    </div>
+    <div>
+        <label for="First Name:">First Name:</label>
+        <label>{{ fname }}</label>
+    </div>
+    <div>
+        <label for="Last Name:">Last Name:</label>
+        <label>{{ lname }}</label>
+    </div>
+</form>
 
-    <form action="/s13_change_card" method="POST">
-        <div>
-            <label for="Credit Card Number:">Credit Card Number</label>
-            <input type="text" name="card_number" oninput="value=value.replace(/[^\d]/g,'')" id="card_number"
-                placeholder="xxxx xxxx xxxx xxxx" required>
-        </div>
-        <div>
-            <label for="Security Code:">Security Code</label>
-            <input type="text" name="cvv" id="cvv" size="4" oninput="value=value.replace(/[^\d]/g,'')"
-                placeholder="xxx" required>
-        </div>
-        <div>
-            <label for="Expiration Date:">Expiration Date</label>
-            <input type="date" name="month" id="month" placeholder="mm" size="3" required>
-            <span>/</span>
-            <input type="date" name="year" id="year" placeholder="yyyy" size="5" required>
-        </div>
+<form action="/s13_change_card" method="POST">
+    <div>
+        <label for="Credit Card Number:">Credit Card Number</label>
+        <input type="text" name="card_number" oninput="value=value.replace(/[^\d]/g,'')" id="card_number"
+               placeholder="xxxx xxxx xxxx xxxx" required>
+    </div>
+    <div>
+        <label for="Security Code:">Security Code</label>
+        <input type="text" name="cvv" id="cvv" size="4" oninput="value=value.replace(/[^\d]/g,'')"
+               placeholder="xxx" required>
+    </div>
+    <div>
+        <label for="Expiration Date:">Expiration Date</label>
+        <input type="date" name="month" id="month" placeholder="mm" size="3" required>
+        <span>/</span>
+        <input type="date" name="year" id="year" placeholder="yyyy" size="5" required>
+    </div>
 
-        <input type="submit" value="Approve" onclick="return check();">
-    </form>
-
-
+    <input type="submit" value="Approve" onclick="return check();">
+</form>
 
 
-    <form action="/s3_home_customer" method="GET">
-        <input type="submit" value="Back">
-    </form>
+<form action="/s3_home_customer" method="GET">
+    <input type="submit" value="Back">
+</form>
 
-    <script>
-        function check() {
-            var cardlength = document.getElementById('card_number').value.length;
-            var cvv = document.getElementById('cvv').value.length;
-            var year = document.getElementById('year').value;
-            var month = document.getElementById('month').value;
+<script>
+    function check() {
+        var cardlength = document.getElementById('card_number').value.length;
+        var cvv = document.getElementById('cvv').value.length;
+        var year = document.getElementById('year').value;
+        var month = document.getElementById('month').value;
 
-            if (cardlength !== 16) {
-                alert("Credit card must have 16 digits!");
-                return false;
-            }
-            if (cvv !== 3) {
-                alert("Security code must have 3 digits!");
-                return false;
-            }
-            if (month.length !== 2) {
-                alert("Month must have 2 digits!");
-                return false;
-            }
-            if (year.length !== 4) {
-                alert("Year must have 4 digits!");
-                return false;
-            }
-            if (month < 1 || month > 12) {
-                alert("Month must between 1 and 12!");
-                return false;
-            }
-            exp = new Date(year, month - 1); // month: 0-indexed
-            if (exp < new Date(new Date().toDateString())) {
-                alert("Credit card has expired!");
-                return false;
-            }
-            alert("Success!");
-            return true;
+        if (cardlength !== 16) {
+            alert("Credit card must have 16 digits!");
+            return false;
         }
-    </script>
+        if (cvv !== 3) {
+            alert("Security code must have 3 digits!");
+            return false;
+        }
+        if (month.length !== 2) {
+            alert("Month must have 2 digits!");
+            return false;
+        }
+        if (year.length !== 4) {
+            alert("Year must have 4 digits!");
+            return false;
+        }
+        if (month < 1 || month > 12) {
+            alert("Month must between 1 and 12!");
+            return false;
+        }
+        exp = new Date(year, month - 1); // month: 0-indexed
+        if (exp < new Date(new Date().toDateString())) {
+            alert("Credit card has expired!");
+            return false;
+        }
+        alert("Success!");
+        return true;
+    }
+</script>
 
 </body>
 
