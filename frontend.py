@@ -110,9 +110,12 @@ def s14_view_orderhistory():
     # print(ids)
     return render_template("s14_view_orderhistory.html", username=username, id=-1, ids=ids, data=None)
 
-
+@frontend_api.route('/s15_view_storeitems', methods=['GET'])
 def s15_view_storeitems():
-    return render_template("s15_view_storeitems.html")
+    username = config.USERNAME
+    chainlist = backend.s15_get_chain()
+    print(chainlist)
+    return render_template("s15_view_storeitems.html",Username = username, chainlist = chainlist)
 
 
 def s16_review_order():

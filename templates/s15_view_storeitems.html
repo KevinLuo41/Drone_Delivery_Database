@@ -18,7 +18,7 @@
 <form>
     <div>
         <label for="Username"> Username:</label>
-        <input type="text" name="Username" id="Username" placeholder="SpaceCowboy" required/>
+        <input type="text" name="Username" id="Username" value= {{ Username }} /readonly>
     </div>
 </form>
 
@@ -27,15 +27,18 @@
 
 <form>
     <div>
-        <label for="Chaine">Chaine:</label>
-        <select name="Chaine" id="Chaine">
-            <option value="Moss Market" selected disabled> Moss Market </option>
+        <label for="Chain">Chain:</label>
+        <select name="Chain" id="Chain">
+			<option value="" selected = "selected">Select Chain</option>
+        </select>
+    </div>
+    <div>
+        <label for="Store">Store:</label>
+        <select name="Store" id="Store">
+            <option value="" selected = "selected">Select Store</option>
         </select>
     </div>
 </form>
-
-
-
 
 
 <form>
@@ -47,25 +50,6 @@
     </div>
 </form>
 
-
-<form>
-    <div>
-        <label for="Store">Store:</label>
-        <select name="Store" id="Store">
-            <option value="West Midtown" selected disabled> West Midtown </option>
-        </select>
-    </div>
-</form>
-
-
-
-<div>
-    <h2 style="color: red;">{{Database Show}}</h2>
-</div>
-
-
-
-
 <form>
     <input type="submit" value="Cancel Order"/>
 </form>
@@ -75,6 +59,26 @@
     <input type="submit" value="Place Order"/>
 </form>
 
+<script charset="ascii" type="text/javascript">
+var chainlist = JSON.parse({{ chainlist|tojson|safe }});
+console.log(chainlist)
+window.onload = function() {
+  var chaindrop = document.getElementById("Chain");
+  var storedrop = document.getElementById("Store");
+  for (var x in chainlist) {
+    chaindrop.options[chaindrop.options.length] = new Option(x, x);
+  }
+  chaindrop.onchange = function() {
+    //empty store dropdown
+    storedrop.length = 1;
+    //display correct values
+    var z = chainlist[chaindrop.value];
+    for (var i = 0; i < z.length; i++) {
+      storedrop.options[storedrop.options.length] = new Option(z[i], z[i]);
+    }
+  }
+}
+</script>
 
 </body>
 

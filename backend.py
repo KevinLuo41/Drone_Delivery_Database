@@ -599,3 +599,28 @@ def get_order_id(username):
         return []
 
     return list_data
+
+def s15_get_chain():
+    conn = db.connect()
+    cur = conn.cursor()
+    cur.execute('select ChainName, StoreName from store where Zipcode = (select Zipcode from users where Username = %s)', [config.USERNAME])
+    conn.commit()
+
+    result = cur.fetchall()
+    chainlist = {}
+    for row in result:
+        if row[0] not in chainlist.keys():
+            chainlist[str(row[0])] = []
+        chainlist[row[0]].append(str(row[1]))
+    
+    # cur.execute('', [config.USERNAME])
+    # conn.commit()
+
+    # result = cur.fetchall()
+    # chainlist = []
+    # for row in result:
+    #     chainlist.append(row[0])
+    # print(chainlist)
+    
+    conn.close()
+    return json.dumps(chainlist)
