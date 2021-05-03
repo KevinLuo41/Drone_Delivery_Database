@@ -418,6 +418,47 @@ def s9_create_chainitem_back():
         conn.close()
         return redirect(url_for('frontend_api.s3_home_admin_front'))
 
+@backend_api.route('/s10_view_tech/filter', methods=["POST"])
+def s10_view_tech_filter():
+    chain_name = get_chain_name()
+    locations = get_store_name(chain_name)
+    users = get_tech_and_store(chain_name)
+
+    print(request.form)
+    tech_name = request.form['Username']
+    location = request.form['location']
+    if tech_name == '': tech_name = None
+    if location == 'NULL': location = None
+    users = get_tech_and_store(chain_name, tech_name, location)
+    return render_template("s10_view_tech.html", chain_name=chain_name, tech_name=tech_name, location=location, locations=locations, users=users)
+
+@backend_api.route('/s10_view_tech/assign', methods=["POST"])
+def s10_view_tech_assign():
+    chain_name = get_chain_name()
+    store_name = get_store_name(chain_name)
+
+    print(request.form)
+    return render_template("s10_view_tech.html")
+    # return redirect(url_for('frontend_api.s10_view_tech'))
+
+def get_tech_and_store(chain_name, tech_name=None, store_name=None):
+    conn = db.connect()
+    cur = conn.cursor()
+    result_list = []
+    try:
+        cur.callproc('manager_view_drone_technicians', [chain_name, tech_name, store_name])  # 10a
+        conn.commit()
+    except Exception as e:
+        print(e)
+        return Response(status=500)
+    finally:
+        cur.execute('select * from manager_view_drone_technicians_result')
+        conn.commit()
+        result = cur.fetchall()
+        result_list = list(result)
+        print(result_list)
+        conn.close()
+    return result_list
 
 @backend_api.route('/s11_view_drone', methods=["POST"])
 def s11_view_drone():

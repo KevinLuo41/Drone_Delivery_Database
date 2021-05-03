@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title> Chain Manager View Drone Technicians</title>
 </head>
@@ -7,66 +8,85 @@
     h1 {
         text-align: left;
     }
+
+    /* select {
+        border: 0;
+        width: 100%;
+    } */
 </style>
 
 <body>
-<h1> Chain Manager View Drone Technicians </h1>
+    <h1> Chain Manager View Drone Technicians </h1>
+
+    <form>
+        <div>
+            <label for="Chain">Chain: {{chain_name}}</label>
+        </div>
+    </form>
 
 
 
+    <form action="/s10_view_tech/filter" method="POST">
+        <div>
+            <label for="Username">Username:</label>
+            <input type="text" name="Username" id="Username" placeholder="technician" {% if tech_name %}value={{
+                tech_name }} {% endif %}>
 
-<form>
-    <div>
-        <label for="Chain">Chain:</label>
-        <input type="text" name="Chain" id="Chain" placeholder="Moss Market" required/>
-    </div>
-</form>
+            <label for="location">location:</label>
+            <select name="location" id="location">
+                <option value="NULL"> NULL </option>
+                {% for item in locations%}
+                {% if item == location %}
+                <option value="{{ item }}" selected>{{ item }}</option>
+                {% else %}
+                <option value="{{ item }}">{{ item }}</option>
+                {% endif %}
+                {% endfor %}
+            </select>
 
-
-
-<form>
-    <div>
-        <label for="Username">Username:</label>
-        <input type="text" name="Username" id="Username" required/>
-    </div>
-</form>
-
-
-<form>
-    <div>
-        <label for="location">location:</label>
-        <select name="location" id="location">
-            <option value="NULL" selected disabled> NULL </option>
-        </select>
-    </div>
-</form>
+            <input type="submit" value="Filter">
+        </div>
+    </form>
 
 
-<div>
-    <h2 style="color: red;">{{Database Show}}</h2>
-</div>
+    <form action="/s10_view_tech/assign" method="POST">
+        {% if users %}
+        <table>
+            <tr>
+                <th>Username</th>
+                <th>Name</th>
+                <th>Location</th>
+            </tr>
+            {% for row in users %}
+            <tr>
+                <td>{{ row[0] }}</td>
+                <td>{{ row[1] }}</td>
+                <!-- <td>{{ row[2] }}</td> -->
+                <td>
+                    <select name="assign_loc" id="assign_loc">
+                        {% for item in locations %}
+                        {% if item == row[2] %}
+                        <option value="{{ item }}" selected>{{ item }}</option>
+                        {% else %}
+                        <option value="{{ item }}">{{ item }}</option>
+                        {% endif %}
+                        {% endfor %}
+                    </select>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+        <input type="submit" value="Save">
+        {% endif %}
+    </form>
 
+    <form action="/s10_view_tech" method="GET">
+        <input type="submit" value="Reset">
+    </form>
 
-
-<form action="/s9_ChainManager_CreateChainItem.html">
-    <input type="submit" value="Back" />
-</form>
-
-
-
-
-<form>
-    <input type="submit" value="Reset"/>
-</form>
-
-
-
-<form>
-    <input type="submit" value="Save"/>
-</form>
-
-
-
+    <form action="/s3_home_manager" method="GET">
+        <input type="submit" value="Back">
+    </form>
 </body>
 
 

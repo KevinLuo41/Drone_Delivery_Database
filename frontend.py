@@ -78,6 +78,14 @@ def s9_create_chainitem():
     return render_template("s9_create_chainitem.html", chain_name=chain_name, item_list=item_list, new_PLU=new_PLU)
 
 
+@frontend_api.route('/s10_view_tech', methods=['GET'])
+def s10_view_tech():
+    chain_name = backend.get_chain_name()
+    locations = backend.get_store_name(chain_name)
+    users = backend.get_tech_and_store(chain_name)
+    return render_template("s10_view_tech.html", chain_name=chain_name, locations=locations, users=users)
+
+
 # S11
 @frontend_api.route('/s11_view_drone', methods=['GET'])
 def s11_view_drone_view():

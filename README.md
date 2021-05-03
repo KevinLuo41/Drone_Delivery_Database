@@ -22,6 +22,7 @@
 - S11 Complete Manager View Drones
 - S12 Complete Manager View Stores
 - S13 Complete Change Card Number
+- S10 Complete Manager View Technicians (filter)
 
 
 ## Wen Li：
