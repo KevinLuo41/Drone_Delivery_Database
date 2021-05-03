@@ -14,6 +14,7 @@
 
 5/2:
 - S19 Complete track drones
+- S17 Complete view order, assign drone
 
 ## Maiqi Ding
 4/29:
