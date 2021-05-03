@@ -75,7 +75,7 @@
                 <tr>
                     <td>
                         {{ row[0] }}
-                        <input type="hidden" id ="oid" name="oid" value = {{ row[0] }}>
+                        <input type="hidden" id="oid" name="oid" value= {{ row[0] }}>
                     </td>
                     {% if row[1] == "None" %}
                         <label for="operator"></label>
@@ -104,6 +104,27 @@
                                 <option value="Drone Assigned"> Drone Assigned</option>
                                 <option value="In Transit"> In Transit</option>
                                 <option value="Delivered"> Delivered</option>
+                            </select>
+                        </td>
+                    {% elif row[1] == name %}
+                        <td>{{ row[1] }}</td>
+                        <input type="hidden" id="operator" name="operator" value= {{ row[1] }}>
+
+                        <td>{{ row[2] }}</td>
+                        <td>{{ row[3] }}</td>
+                        <input type="hidden" id="did" name="did" value= {{ row[3] }}>
+
+                        <td>
+                            <label for="status"></label>
+                            <select name="status" id="status">
+                                {% for item in ["Pending","Drone Assigned","In Transit","Delivered"] %}
+
+                                    {% if item == row[4] %}
+                                        <option value="{{ item }}" selected>{{ item }}</option>
+                                    {% else %}
+                                        <option value="{{ item }}">{{ item }}</option>
+                                    {% endif %}
+                                {% endfor %}
                             </select>
                         </td>
                     {% else %}

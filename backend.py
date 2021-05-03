@@ -713,7 +713,6 @@ def s17_tech_vieworders_back():
         conn.commit()
         result = cur.fetchall()
         print(result)
-        # row_headers = [x[0] for x in cur.description]
         for re in result:
             # print(re)
             list_data = list(map(str, re))
@@ -738,7 +737,7 @@ def get_name(username):
 def get_drone(username):
     conn = db.connect()
     cur = conn.cursor()
-    cur.execute('select id from drone where dronetech =%s', [username])
+    cur.execute('select id from drone where dronetech =%s and dronestatus ="Available"', [username])
     result = cur.fetchall()
     conn.commit()
     print(result)
@@ -748,15 +747,37 @@ def get_drone(username):
     conn.close()
     return drones
 
+
+
 @backend_api.route('/s17_assgin_drone', methods=['POST'])
 def s17_assgin_drone_back():
+    username = config.USERNAME
     oid = request.form["oid"]
     operator = request.form["operator"]
     did = request.form["did"]
     status = request.form["status"]
+    print(request.form)
+
+    if operator =="None" and did =="None":
+        return redirect(url_for("frontend_api.s17_tech_vieworders_front"))
+    if (operator != "None" and did =="None") or (operator == "None" and did !="None"):
+        flash("operator and drone must be assigned together")
+        return redirect(url_for("frontend_api.s17_tech_vieworders_front"))
+
+    conn = db.connect()
+    cur = conn.cursor()
+
+    try:
+        cur.callproc('dronetech_assign_order', [username, did, status,oid])
+        conn.commit()
+        flash("Update Succeed!")
+    except Exception as e:
+        print(e)
+    finally:
+        conn.close()
+    return redirect(url_for("frontend_api.s17_tech_vieworders_front"))
 
 
-    return render_template("s16_review_order.html")
 
 @backend_api.route('/s18_tech_orderdetails', methods=['POST'])
 def s18_tech_orderdetails_back():

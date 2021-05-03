@@ -840,70 +840,24 @@ CREATE PROCEDURE dronetech_assign_order(
 )
 BEGIN
 -- Type solution below
-/*
-DECLARE i_drone_status VARCHAR(15);
 
-IF NOT EXISTS(SELECT * FROM DRONE WHERE DroneTech = i_username AND ID = i_droneid) THEN 
-	SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Tech and Drone do not match';
-END IF;
+UPDATE orders
+SET
+DroneID =i_droneid,
+OrderStatus = i_status
+WHERE ID = i_orderid;
 
-IF i_status = "Drone Assigned" or i_status = "In Transit" THEN
-	SELECT "Busy" INTO i_drone_status;
-ELSEIF i_status = "Delivered" THEN
-	SELECT "Available" INTO i_drone_status;
-ELSE
-	SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Status Name Incorrect';
-END IF;
-
-IF (SELECT OrderStatus FROM ORDERS WHERE ID = i_orderid) = "Pending" THEN 
-	UPDATE DRONE 
-	SET 
-		DroneStatus = i_drone_status
-	WHERE
-		ID = i_droneid;
-        
-	UPDATE ORDERS
+IF i_status = 'Delivered' or i_status = 'Pending' THEN
+	UPDATE drone
 	SET
-		OrderStatus = i_status
-	WHERE 
-	ID =i_orderid;
-ELSEIF EXISTS(SELECT * FROM ORDERS o JOIN DRONE d ON o.DroneID = d.ID WHERE o.ID = i_orderid AND d.DroneTech = i_username) THEN
-	UPDATE DRONE 
-	SET 
-		DroneStatus = i_drone_status
-	WHERE
-		ID = i_droneid;
-        
-	UPDATE ORDERS
-	SET
-		OrderStatus = i_status
-	WHERE 
-	ID =i_orderid;
+	DroneStatus = 'Available'
+	WHERE ID = i_droneid;
 ELSE
-	SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Tech cannot modify other\'s order';
-END IF;*/
-IF (SELECT OrderStatus FROM orders WHERE ID = i_orderid) = 'Pending'
-    THEN
-	UPDATE orders
-    SET
-    DroneID = i_droneid,
-    OrderStatus = i_status
-    WHERE ID = i_orderid;
-END IF;
-IF (SELECT OrderStatus FROM orders WHERE ID = i_orderid) = 'Drone Assigned' 
-    THEN
-	UPDATE orders
-    SET
-    OrderStatus = i_status
-    WHERE ID = i_orderid;
-END IF;
-IF i_status = 'Drone Assigned' THEN
 	UPDATE drone
 	SET
 	DroneStatus = 'Busy'
 	WHERE ID = i_droneid;
 END IF;
-
 -- End of solution
 END //
 DELIMITER ;
