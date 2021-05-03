@@ -714,14 +714,14 @@ def s16_review_order_back():
 @backend_api.route('/s17_tech_vieworders', methods=['POST'])
 def s17_tech_vieworders_back():
     username = config.USERNAME
-    print(username)
+    # print(username)
     syear = request.form["syear"]
     smonth = request.form["smonth"]
     sday = request.form["sday"]
     eyear = request.form["eyear"]
     emonth = request.form["emonth"]
     eday = request.form["eday"]
-    print(request.form)
+    # print(request.form)
 
     if syear and smonth and sday:
         # print(syear,smonth,sday)
@@ -743,8 +743,8 @@ def s17_tech_vieworders_back():
     conn = db.connect()
     cur = conn.cursor()
     orders = []
-    name ="None"
-    drones =[]
+    name = "None"
+    drones = []
     try:
         name = get_name(username)
         drones = get_drone(username)
@@ -753,18 +753,19 @@ def s17_tech_vieworders_back():
         cur.execute('select * from drone_technician_view_order_history_result')
         conn.commit()
         result = cur.fetchall()
-        print(result)
+        # print(result)
         for re in result:
             # print(re)
             list_data = list(map(str, re))
             orders.append(list_data)
-        print(orders)
+        # print(orders)
     except Exception as e:
         print(e)
     finally:
         conn.close()
 
-    return render_template("s17_tech_vieworders.html", name=name, drones=drones,orders = orders)
+    return render_template("s17_tech_vieworders.html", name=name, drones=drones, orders=orders)
+
 
 def get_name(username):
     conn = db.connect()
@@ -775,19 +776,19 @@ def get_name(username):
     conn.close()
     return name
 
+
 def get_drone(username):
     conn = db.connect()
     cur = conn.cursor()
     cur.execute('select id from drone where dronetech =%s and dronestatus ="Available"', [username])
     result = cur.fetchall()
     conn.commit()
-    print(result)
+    # print(result)
     drones = []
     for d in result:
         drones.append(d[0])
     conn.close()
     return drones
-
 
 
 @backend_api.route('/s17_assgin_drone', methods=['POST'])
@@ -796,20 +797,25 @@ def s17_assgin_drone_back():
     oid = request.form["oid"]
     operator = request.form["operator"]
     did = request.form["did"]
-    status = request.form["status"]
-    print(request.form)
 
-    if operator =="None" and did =="None":
+    # print(request.form)
+
+    if operator == "None" and did == "None":
         return redirect(url_for("frontend_api.s17_tech_vieworders_front"))
-    if (operator != "None" and did =="None") or (operator == "None" and did !="None"):
+    if (operator != "None" and did == "None") or (operator == "None" and did != "None"):
         flash("operator and drone must be assigned together")
+        return redirect(url_for("frontend_api.s17_tech_vieworders_front"))
+    try:
+        status = request.form["status"]
+    except:
+        flash("Pending status is not allowed")
         return redirect(url_for("frontend_api.s17_tech_vieworders_front"))
 
     conn = db.connect()
     cur = conn.cursor()
 
     try:
-        cur.callproc('dronetech_assign_order', [username, did, status,oid])
+        cur.callproc('dronetech_assign_order', [username, did, status, oid])
         conn.commit()
         flash("Update Succeed!")
     except Exception as e:
@@ -819,10 +825,47 @@ def s17_assgin_drone_back():
     return redirect(url_for("frontend_api.s17_tech_vieworders_front"))
 
 
-
 @backend_api.route('/s18_tech_orderdetails', methods=['POST'])
 def s18_tech_orderdetails_back():
-    return render_template("s18_tech_orderdetails.html")
+    username = config.USERNAME
+    # print(request.form)
+    try:
+        oid = request.form["selected"]
+        print(username, oid)
+    except Exception as e:
+        print(e)
+        return redirect(url_for("frontend_api.s17_tech_vieworders_front"))
+
+    conn = db.connect()
+    cur = conn.cursor()
+    detail = None
+    items = []
+    try:
+        cur.callproc('dronetech_order_details', [username, oid])
+        cur.execute('select * from dronetech_order_details_result')
+        conn.commit()
+        row_headers = [x[0] for x in cur.description]
+        result = cur.fetchall()
+
+        detail = dict(zip(row_headers, list(map(str, result[0]))))
+
+        cur.callproc('dronetech_order_items', [username, oid])
+        cur.execute('select * from dronetech_order_items_result')
+        conn.commit()
+        row_headers = [x[0] for x in cur.description]
+        result = cur.fetchall()
+
+        print(result)
+        items ={}
+        for row in result:
+
+            items[row[0]] = row[1]
+    except Exception as e:
+        print(e)
+    finally:
+        conn.close()
+    return render_template("s18_tech_orderdetails.html", detail=detail, items=items)
+
 
 @backend_api.route('/s19_track_drone', methods=['POST'])
 def s19_track_drone_back():
