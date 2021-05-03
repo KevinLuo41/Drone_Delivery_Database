@@ -890,15 +890,15 @@ FROM
     ORDERS o
         LEFT JOIN
     DRONE d ON o.DroneID = d.ID
-        JOIN
+        LEFT JOIN
     CONTAINS n ON o.ID = n.OrderID
-        JOIN
+        LEFT JOIN
     CHAIN_ITEM ci ON ci.ChainItemName = n.ItemName
         AND ci.ChainName = n.ChainName
         AND ci.PLUNumber = n.PLUNumber
-        JOIN
+        LEFT JOIN
 	USERS uc ON o.CustomerUsername = uc.Username
-		JOIN 
+		LEFT JOIN 
 	USERS ut ON d.DroneTech = ut.Username
 GROUP BY o.ID
 HAVING o.ID = i_orderid;
