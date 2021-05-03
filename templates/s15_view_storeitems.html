@@ -18,28 +18,27 @@
 <input type="text" name="Username" id="Username" value={{ Username }} /readonly>
 
 
-<form>
+<form id="order" action="s15_place_order" method="POST">
 
     <label for="Chain">Chain:</label>
-    <select name="Chain" id="Chain">
-        <option value="0" selected="selected">Select Chain</option>
+    <select name="Chain" id="Chain" required>
+        <option value="0" disabled selected>Select Chain</option>
     </select>
 
     <label for="Store">Store:</label>
-    <select name="Store" id="Store">
-        <option value="" selected="selected">Select Store</option>
+    <select name="Store" id="Store" required>
+        <option value="" selected disabled>Select Store</option>
     </select>
 
     <label for="Category">Category:</label>
     <select name="Category" id="Category">
         <option value="" selected> ALL</option>
     </select>
-</form>
 
-<br/><br/>
+    <br/><br/>
 
-<div id="Database">
-    <form id="order" method="POST">
+    <div id="Database">
+
         <table style="text-align: left;" id="ordertable">
             <colgroup>
                 <col span="1" style="width: 70%;">
@@ -50,13 +49,17 @@
                 <th size="200px">Quantity</th>
             </tr>
         </table>
-    </form>
 
-</div>
+    </div>
+</form>
 
 <br/><br/>
-<form action="/s3_home_customer">
+<form action="/s3_home_customer" method="GET">
     <input type="submit" value="Cancel Order"/>
+
+</form>
+
+<form action="/s15_place_order" method="POST">
     <input type="submit" value="Place Order" form="order"/>
 </form>
 

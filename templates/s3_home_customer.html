@@ -12,14 +12,24 @@
 
 <body>
 <h1> Customer Home</h1>
+<div>
+    {% with messages = get_flashed_messages(with_categories=True) %}
+    {% if messages %}
+    {% for category, message in messages %}
+    <h2 style="color: red;">{{message}}</h2>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
 
+    {% block body %}{% endblock %}
+</div>
 
 <div>
     <form action="/s13_change_card" method="GET">
         <input type="submit" value="Change Credit Card Info"/>
     </form>
 
-    <form method="GET">
+    <form action="/s16_review_order" method="GET">
         <input type="submit" value="Review Order"/>
     </form>
 </div>

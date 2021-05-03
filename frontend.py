@@ -1,4 +1,4 @@
-from flask import Blueprint, request, render_template
+from flask import Blueprint, redirect, flash,url_for, render_template
 import backend, config
 
 frontend_api = Blueprint('frontend_api', __name__)
@@ -128,7 +128,15 @@ def s15_view_storeitems():
 
 @frontend_api.route('/s16_review_order', methods=['GET'])
 def s16_review_order_front():
-    return render_template("s16_review_order.html")
+    username = config.USERNAME
+    result = backend.s16_check_creating(username)
+    if not result:
+        flash("No creating order is found!")
+        return render_template("s3_home_customer.html")
+    else:
+        chain,store = result[0]
+
+    return backend.s16_review_order_back(chain,store)
 
 @frontend_api.route('/s17_tech_vieworders', methods=['GET'])
 def s17_tech_vieworders_front():

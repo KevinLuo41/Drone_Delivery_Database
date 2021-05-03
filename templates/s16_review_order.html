@@ -10,45 +10,60 @@
 </style>
 
 <body>
-<h1> Customer Review Order  </h1>
+<h1> Customer Review Order </h1>
 
 
+<label for="Chain">Chain:</label>
+<input type="text" name="Chain" id="Chain" value={{ chain }} disabled/>
 
+<label for="Store">Store:</label>
+<input type="text" name="Store" id="Store" value={{ store }} disabled/>
 
-<form>
-    <div>
-        <label for="Chain">Chain:</label>
-        <input type="text" name="Chain" id="Chain" placeholder="Moss Market" required/>
-    </div>
+<form id="update" action="/s16_place_order" method="POST">
+    <table style="text-align: left;">
+        <tr>
+            <th style="width:200px">Items</th>
+            <th style="width:200px">Quantity</th>
+            <th style="width:200px">Unit Cost</th>
+        </tr>
+
+        {% for i in items %}
+            <tr>
+
+                <td>
+                    {{ i[0] }}
+                    <input type="hidden" name="item" id="item" value={{ i[0] }}>
+                </td>
+                <td>
+                    <label for="update">Status:</label>
+                    <select name="update" id="update">
+                        {% for num in range( i[2]|int ) %}
+                            {% if num == i[1]|int %}
+                                <option value="{{ num }}" selected>{{ num }}</option>
+                            {% else %}
+                                <option value="{{ num }}">{{ num }}</option>
+                            {% endif %}
+                        {% endfor %}
+
+                    </select>
+
+                </td>
+
+                <td>{{ i[3] }}</td>
+
+            </tr>
+
+        {% endfor %}
+
+    </table>
 </form>
 
-<form>
-    <div>
-        <label for="Store">Store:</label>
-        <input type="text" name="Store" id="Store" placeholder="West Midtown" required/>
-    </div>
+
+<form action="/s3_home_customer">
+    <input type="submit" value="Back"/>
+
+    <input type="submit" value="Place Order" form="update"/>
 </form>
-
-
-
-
-
-<div>
-    <h2 style="color: red;">{{Database Show}}</h2>
-</div>
-
-
-
-
-<form action="/s15_CustomerViewStoreItems.html">
-    <input type="submit" value="Back" />
-</form>
-
-<form>
-    <input type="submit" value="Place Order"/>
-</form>
-
-
 
 
 </body>

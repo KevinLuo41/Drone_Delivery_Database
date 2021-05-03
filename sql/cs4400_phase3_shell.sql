@@ -703,6 +703,7 @@ CREATE TABLE customer_review_order_result AS
 SELECT 
     c.ItemName AS Items,
     c.Quantity AS Quantity,
+    ci.Orderlimit AS Orderlimit,
     ci.Price AS 'Unit Cost'
 FROM
     CHAIN_ITEM ci
@@ -757,17 +758,11 @@ WHERE
     (SELECT ItemName, ChainName, Quantity FROM `contains` WHERE OrderID = (SELECT ID FROM orders WHERE OrderStatus = 'Creating' AND CustomerUsername = i_username)) as c
     ON ci.ChainItemName = c.ItemName AND ci.ChainName = c.ChainName
     ON DUPLICATE KEY UPDATE `Quantity` = (ci.Quantity - c.Quantity);
-
--- IF (SELECT EXP_DATE FROM CUSTOMER WHERE Username = i_username)> curdate() 
--- 	AND i_quantity > (SELECT Orderlimit FROM CHAIN_ITEM WHERE ChainItemName =i_item_name AND ChainName = i_chain_name)
--- THEN
+    
 -- 	UPDATE orders
 -- 	SET OrderStatus = 'Pending'
 -- 	WHERE OrderStatus = 'Creating' AND CustomerUsername = i_username;
--- ELSE
--- 	SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'One store each time';
--- END IF;
--- End of solution
+
 END //
 DELIMITER ;
 

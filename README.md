@@ -17,6 +17,9 @@
 - S17 Complete view order, assign drone
 - S18 Complete order details
 
+5/3:
+- S15 Complete
+- S16 Complete
 ## Maiqi Ding
 4/29:
 - S8 Complete Admin View Customers (s8)

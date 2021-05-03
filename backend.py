@@ -2,6 +2,7 @@ from flask import Blueprint, request, Response, redirect, jsonify, url_for, flas
 from flaskext.mysql import MySQL
 import config
 import json
+from datetime import datetime
 
 db = MySQL()
 backend_api = Blueprint('backend_api', __name__)
@@ -418,6 +419,7 @@ def s9_create_chainitem_back():
         conn.close()
         return redirect(url_for('frontend_api.s3_home_admin_front'))
 
+
 @backend_api.route('/s10_view_tech/filter', methods=["POST"])
 def s10_view_tech_filter():
     chain_name = get_chain_name()
@@ -430,7 +432,9 @@ def s10_view_tech_filter():
     if tech_name == '': tech_name = None
     if location == 'NULL': location = None
     users = get_tech_and_store(chain_name, tech_name, location)
-    return render_template("s10_view_tech.html", chain_name=chain_name, tech_name=tech_name, location=location, locations=locations, users=users)
+    return render_template("s10_view_tech.html", chain_name=chain_name, tech_name=tech_name, location=location,
+                           locations=locations, users=users)
+
 
 @backend_api.route('/s10_view_tech/assign', methods=["POST"])
 def s10_view_tech_assign():
@@ -449,6 +453,7 @@ def s10_view_tech_assign():
 
     # return render_template("s10_view_tech.html")
     return redirect(url_for('frontend_api.s10_view_tech'))
+
 
 def get_tech_and_store(chain_name, tech_name=None, store_name=None):
     conn = db.connect()
@@ -469,15 +474,18 @@ def get_tech_and_store(chain_name, tech_name=None, store_name=None):
         conn.close()
     return result_list
 
+
 def get_zip(chain_name, store_name):
     conn = db.connect()
     cur = conn.cursor()
     result_list = []
-    cur.execute('SELECT Zipcode FROM grocery_drone_delivery.STORE where ChainName = %s AND StoreName = %s', [chain_name, store_name])
+    cur.execute('SELECT Zipcode FROM grocery_drone_delivery.STORE where ChainName = %s AND StoreName = %s',
+                [chain_name, store_name])
     conn.commit()
     result = cur.fetchall()
     zipcode = result[0][0]
     return zipcode
+
 
 def set_drone_zip(tech, zipcode):
     conn = db.connect()
@@ -487,6 +495,7 @@ def set_drone_zip(tech, zipcode):
     conn.commit()
     conn.close()
 
+
 def set_tech_store(tech, store):
     conn = db.connect()
     cur = conn.cursor()
@@ -494,6 +503,7 @@ def set_tech_store(tech, store):
     cur.execute('UPDATE grocery_drone_delivery.DRONE_TECH SET StoreName = %s WHERE Username = %s', [store, tech])
     conn.commit()
     conn.close()
+
 
 @backend_api.route('/s11_view_drone', methods=["POST"])
 def s11_view_drone():
@@ -692,15 +702,6 @@ def s15_get_chain():
             chainlist[str(row[0])] = []
         chainlist[row[0]].append(str(row[1]))
 
-    # cur.execute('', [config.USERNAME])
-    # conn.commit()
-
-    # result = cur.fetchall()
-    # chainlist = []
-    # for row in result:
-    #     chainlist.append(row[0])
-    # print(chainlist)
-
     conn.close()
     return json.dumps(chainlist)
 
@@ -741,10 +742,125 @@ def s15_get_items():
     return jsonify(data)
 
 
-@backend_api.route('/s16_review_order', methods=['POST'])
-def s16_review_order_back():
-    return render_template("s16_review_order.html")
+@backend_api.route('/s15_place_order', methods=["POST"])
+def s15_place_order():
+    username = config.USERNAME
+    print((request.form.to_dict()))
+    chain = request.form["Chain"]
+    store = request.form["Store"]
+    orders = request.form.to_dict()
+    correct_order =False
+    for item, quant in orders.items():
+        if item == "Chain" or item == "Store" or item == "Category" or quant == "0":
+            continue
+        else:
+            correct_order=True
+            print(item, ":", quant)
+            conn = db.connect()
+            cur = conn.cursor()
+            try:
+                cur.callproc('customer_select_items', [username, chain, store, item, int(quant)])
+                conn.commit()
 
+            except Exception as e:
+                print(e)
+                redirect(url_for("frontend_api.s3_home_customer_front"))
+            finally:
+                conn.close()
+
+    if not correct_order:
+        flash("No order placed")
+        return redirect(url_for("frontend_api.s3_home_customer_front"))
+
+    return s16_review_order_back(chain, store)
+
+
+@backend_api.route('/s16_review_order', methods=['POST'])
+def s16_review_order_back(chain,store):
+    username = config.USERNAME
+    conn = db.connect()
+    cur = conn.cursor()
+    items=[]
+    try:
+        cur.callproc('customer_review_order', [username])
+        cur.execute('select * from customer_review_order_result')
+        conn.commit()
+        result = cur.fetchall()
+        for re in result:
+            # print(re)
+            list_data = list(map(str, re))
+            items.append(list_data)
+        # print(list_data)
+
+    except Exception as e:
+        print(e)
+        redirect(url_for("frontend_api.s3_home_customer_front"))
+    finally:
+        conn.close()
+    return render_template("s16_review_order.html", chain =chain,store =store, items = items)
+
+def s16_check_creating(username):
+
+    conn = db.connect()
+    cur = conn.cursor()
+    result =[]
+    try:
+        cur.execute("SELECT storename, chainname FROM store "
+                    "WHERE (chainname , zipcode) = "
+                    "(SELECT chainname, zipcode FROM orders "
+                    "JOIN contains ON id = orderid JOIN users "
+                    "ON customerusername = username "
+                    "WHERE orderstatus = 'Creating' "
+                    "and username = %s "
+                    "GROUP BY chainname , zipcode)",[username])
+        conn.commit()
+        result = cur.fetchall()
+        print(result)
+    except Exception as e:
+        print(e)
+
+    return result
+
+@backend_api.route('/s16_place_order', methods=['POST'])
+def s16_place_order():
+    username = config.USERNAME
+    orders = request.form.to_dict(flat=False)
+    updates = dict(zip(orders["item"],orders['update']))
+    print(updates)
+
+    exp = s16_get_exp(username)
+    curdate = datetime.today().date()
+    if exp<curdate:
+        flash("card expired, change a card to continue")
+        return redirect(url_for("frontend_api.s3_home_customer_front"))
+    else:
+        conn = db.connect()
+        cur = conn.cursor()
+        for item, quant in updates.items():
+            print(item, ":", quant)
+            try:
+                cur.callproc('customer_update_order', [username, item, int(quant)])
+                conn.commit()
+
+            except Exception as e:
+                print(e)
+                return redirect(url_for("frontend_api.s3_home_customer_front"))
+
+        cur.execute("UPDATE orders SET OrderStatus = 'Pending' "
+                    "WHERE OrderStatus = 'Creating' AND CustomerUsername = %s",[username])
+        conn.commit()
+        conn.close()
+
+    flash("Your order has been received!")
+    return  redirect(url_for("frontend_api.s3_home_customer_front"))
+
+def s16_get_exp(username):
+    conn = db.connect()
+    cur = conn.cursor()
+    cur.execute("select exp_date from customer where username =%s",[username])
+    exp = cur.fetchall()[0][0]
+    print(exp)
+    return exp
 
 @backend_api.route('/s17_tech_vieworders', methods=['POST'])
 def s17_tech_vieworders_back():
@@ -891,9 +1007,8 @@ def s18_tech_orderdetails_back():
         result = cur.fetchall()
 
         print(result)
-        items ={}
+        items = {}
         for row in result:
-
             items[row[0]] = row[1]
     except Exception as e:
         print(e)
