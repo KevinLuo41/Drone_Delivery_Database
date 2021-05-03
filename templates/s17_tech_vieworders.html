@@ -10,55 +10,156 @@
 </style>
 
 <body>
-<h1> View Store Orders  </h1>
-
-
-
-
-<form>
-    <div>
-        <label for="Dates">Dates:</label>
-        <input type="text" name="Dates" id="Dates" placeholder="1/20/2021" required/>
-        ---
-        <input type="text" name="Dates" id="Dates" placeholder="1/31/2021" required/>
-    </div>
-</form>
-
-
-
-
-
-
-
+<h1> View Store Orders </h1>
 <div>
-    <h2 style="color: red;">{{Database Show}}</h2>
+    {% with messages = get_flashed_messages(with_categories=True) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <h2 style="color: red;">{{ message }}</h2>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    {% block body %}{% endblock %}
 </div>
 
+<form action="/s17_tech_vieworders" method="POST">
+    <span> Dates:
+        <label for="smonth"></label>
+        <input type="text" name="smonth" id="smonth" pattern="[0-9]+" placeholder="MM"
+               maxlength="2" size="3"/>
+        <span>/</span>
+                <label for="sday"></label>
+        <input type="text" name="sday" id="sday" pattern="[0-9]+" placeholder="DD"
+               maxlength="2" size="3"/>
+        <span>/</span>
+        <label for="syear"></label>
+        <input type="text" name="syear" id="syear" pattern="[0-9]+" placeholder="YYYY"
+               maxlength="4" size="5"/>
 
+        <span> -- </span>
+                <label for="emonth"></label>
+        <input type="text" name="emonth" id="emonth" pattern="[0-9]+" placeholder="MM"
+               maxlength="2" size="3"/>
+        <span>/</span>
+                <label for="eday"></label>
+        <input type="text" name="eday" id="eday" pattern="[0-9]+" placeholder="DD"
+               maxlength="2" size="3"/>
+        <span>/</span>
+        <label for="syear"></label>
+        <input type="text" name="eyear" id="eyear" pattern="[0-9]" placeholder="YYYY"
+               maxlength="4" size="5"/>
+    </span>
 
-
-<form action="/s15_CustomerViewStoreItems.html">
-    <input type="submit" value="Back" />
-</form>
-
-<form>
-    <input type="submit" value="Reset"/>
-</form>
-
-<form>
     <input type="submit" value="Filter"/>
 </form>
 
-<form>
-    <input type="submit" value="View Order Details"/>
+
+<form action="/s17_tech_vieworders" method="GET">
+    <input type="submit" value="Reset"/>
 </form>
 
-<form>
-    <input type="submit" value="Save"/>
+<form action="/s17_assgin_drone" id="assign" method="POST">
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Operator</th>
+            <th>Date</th>
+            <th>Drone ID</th>
+            <th>Status</th>
+            <th>Total</th>
+            <th></th>
+        </tr>
+        {% if orders %}
+            {% for row in orders %}
+                <tr>
+                    <td>
+                        {{ row[0] }}
+                        <input type="hidden" id ="oid" name="oid" value = {{ row[0] }}>
+                    </td>
+                    {% if row[1] == "None" %}
+                        <label for="operator"></label>
+                        <td>
+                            <select name="operator" id="operator">
+                                <option value="None"> None</option>
+                                <option value={{ name }}<> {{ name }}</option>
+                            </select>
+                        </td>
+                        <td>{{ row[2] }}</td>
+
+                        <td>
+                            <label for="did"></label>
+                            <select name="did" id="did">
+                                <option value="None"> None</option>
+                                {% for d in drones %}
+                                    <option value={{ d }}> {{ d }}</option>
+                                {% endfor %}
+                            </select>
+                        </td>
+
+                        <td>
+                            <label for="status"></label>
+                            <select name="status" id="status">
+                                <option value="Pending" selected> Pending</option>
+                                <option value="Drone Assigned"> Drone Assigned</option>
+                                <option value="In Transit"> In Transit</option>
+                                <option value="Delivered"> Delivered</option>
+                            </select>
+                        </td>
+                    {% else %}
+                        <td>{{ row[1] }}</td>
+                        <td>{{ row[2] }}</td>
+                        <td>{{ row[3] }}</td>
+                        <td>{{ row[4] }}</td>
+                    {% endif %}
+
+                    <td>{{ row[5] }}</td>
+
+                    <td>
+                        <label for=name="ids"></label>
+                        <input type="radio" id={{ row[0] }} name="ids" value={{ row[0] }}>
+                    </td>
+                </tr>
+            {% endfor %}
+        {% endif %}
+    </table>
+
 </form>
+
+
+<div style="width:500px;">
+    <div style="float: left; width: 80px">
+        <form action="/s3_home_tech">
+            <input type="submit" value="Back"/>
+        </form>
+    </div>
+    <div style="float: left; width: 150px">
+        <form>
+            <input type="submit" value="View Order Details"/>
+        </form>
+    </div>
+    <div style="float: left; width: 100px">
+        <input type="submit" value="Save" form="assign"/>
+
+    </div>
+</div>
 
 
 </body>
 
+<script>
+    const getCellValue = (tr, idx) => tr.children[idx].innerText || tr.children[idx].textContent;
+
+    const comparer = (idx, asc) => (a, b) => ((v1, v2) =>
+            v1 !== '' && v2 !== '' && !isNaN(v1) && !isNaN(v2) ? v1 - v2 : v1.toString().localeCompare(v2)
+    )(getCellValue(asc ? a : b, idx), getCellValue(asc ? b : a, idx));
+
+    document.querySelectorAll('th').forEach(th => th.addEventListener('click', (() => {
+        const table = th.closest('table');
+        Array.from(table.querySelectorAll('tr:nth-child(n+2)'))
+            .sort(comparer(Array.from(th.parentNode.children).indexOf(th), this.asc = !this.asc))
+            .forEach(tr => table.appendChild(tr));
+    })));
+</script>
 
 </html>

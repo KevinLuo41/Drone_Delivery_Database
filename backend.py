@@ -644,6 +644,7 @@ def s15_get_category():
     print(data)
     return jsonify(data)
 
+
 @backend_api.route('/s15_get_items', methods=["POST"])
 def s15_get_items():
     chain = request.form["chain"]
@@ -653,28 +654,113 @@ def s15_get_items():
     if category == "":
         cur.execute('select ChainItemName, Orderlimit from chain_item as ci where ci.ChainName = %s', [chain])
     else:
-        cur.execute('select ChainItemName, Orderlimit from chain_item as ci, item as i where ci.chainitemname = i.itemname and ci.ChainName = %s and i.itemtype = %s', [chain, category])
+        cur.execute(
+            'select ChainItemName, Orderlimit from chain_item as ci, item as i where ci.chainitemname = i.itemname and ci.ChainName = %s and i.itemtype = %s',
+            [chain, category])
     conn.commit()
 
     result = cur.fetchall()
-    data = [{"name":x[0],"quantity":x[1]} for x in result]
+    data = [{"name": x[0], "quantity": x[1]} for x in result]
     print(data)
     return jsonify(data)
 
-@backend_api.route('/s16_review_order', methods=['GET'])
+
+@backend_api.route('/s16_review_order', methods=['POST'])
 def s16_review_order_back():
     return render_template("s16_review_order.html")
 
 
-@backend_api.route('/s17_tech_vieworders', methods=['GET'])
+@backend_api.route('/s17_tech_vieworders', methods=['POST'])
 def s17_tech_vieworders_back():
-    return render_template("s17_tech_vieworders.html")
+    username = config.USERNAME
+    print(username)
+    syear = request.form["syear"]
+    smonth = request.form["smonth"]
+    sday = request.form["sday"]
+    eyear = request.form["eyear"]
+    emonth = request.form["emonth"]
+    eday = request.form["eday"]
+    print(request.form)
+
+    if syear and smonth and sday:
+        # print(syear,smonth,sday)
+        sdate = syear + "-" + smonth + "-" + sday
+    elif (not syear and not smonth and not sday):
+        sdate = None
+    else:
+        flash("Incorrect date format")
+        return redirect(url_for("frontend_api.s17_tech_vieworders_back"))
+
+    if eyear and emonth and eday:
+        edate = eyear + "-" + emonth + "-" + eday
+    elif (not syear and not smonth and not sday):
+        edate = None
+    else:
+        flash("Incorrect date format")
+        return redirect(url_for("frontend_api.s17_tech_vieworders_back"))
+
+    conn = db.connect()
+    cur = conn.cursor()
+    orders = []
+    name ="None"
+    drones =[]
+    try:
+        name = get_name(username)
+        drones = get_drone(username)
+
+        cur.callproc('drone_technician_view_order_history', [username, sdate, edate])
+        cur.execute('select * from drone_technician_view_order_history_result')
+        conn.commit()
+        result = cur.fetchall()
+        print(result)
+        # row_headers = [x[0] for x in cur.description]
+        for re in result:
+            # print(re)
+            list_data = list(map(str, re))
+            orders.append(list_data)
+        print(orders)
+    except Exception as e:
+        print(e)
+    finally:
+        conn.close()
+
+    return render_template("s17_tech_vieworders.html", name=name, drones=drones,orders = orders)
+
+def get_name(username):
+    conn = db.connect()
+    cur = conn.cursor()
+    cur.execute('select concat(firstname," ",lastname) from users where username =%s', [username])
+    name = cur.fetchall()[0][0]
+    conn.commit()
+    conn.close()
+    return name
+
+def get_drone(username):
+    conn = db.connect()
+    cur = conn.cursor()
+    cur.execute('select id from drone where dronetech =%s', [username])
+    result = cur.fetchall()
+    conn.commit()
+    print(result)
+    drones = []
+    for d in result:
+        drones.append(d[0])
+    conn.close()
+    return drones
+
+@backend_api.route('/s17_assgin_drone', methods=['POST'])
+def s17_assgin_drone_back():
+    oid = request.form["oid"]
+    operator = request.form["operator"]
+    did = request.form["did"]
+    status = request.form["status"]
 
 
-@backend_api.route('/s18_tech_orderdetails', methods=['GET'])
+    return render_template("s16_review_order.html")
+
+@backend_api.route('/s18_tech_orderdetails', methods=['POST'])
 def s18_tech_orderdetails_back():
     return render_template("s18_tech_orderdetails.html")
-
 
 @backend_api.route('/s19_track_drone', methods=['POST'])
 def s19_track_drone_back():
@@ -706,5 +792,3 @@ def s19_track_drone_back():
         conn.close()
 
     return render_template("s19_track_drone.html", drones=drones, status=status)
-
-
