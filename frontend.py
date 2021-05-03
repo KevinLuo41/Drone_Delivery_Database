@@ -106,7 +106,7 @@ def s12_manage_store():
 def s13_change_card():
     username = config.USERNAME
     print(username)
-    fname, lname = backend.get_name(username)
+    fname, lname = backend.get_flname(username)
     return render_template("s13_change_card.html", username=username, fname=fname, lname=lname)
 
 

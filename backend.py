@@ -615,7 +615,7 @@ def s13_change_card():
     return redirect(url_for('frontend_api.s13_change_card'))
 
 
-def get_name(username):
+def get_flname(username):
     conn = db.connect()
     cur = conn.cursor()
     try:
