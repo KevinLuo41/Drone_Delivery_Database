@@ -14,148 +14,148 @@
 <h1> Customer View Store Items </h1>
 
 
+<label for="Username"> Username:</label>
+<input type="text" name="Username" id="Username" value={{ Username }} /readonly>
 
 
 <form>
-    <div>
-        <label for="Username"> Username:</label>
-        <input type="text" name="Username" id="Username" value= {{ Username }} /readonly>
-    </div>
+
+    <label for="Chain">Chain:</label>
+    <select name="Chain" id="Chain">
+        <option value="0" selected="selected">Select Chain</option>
+    </select>
+
+    <label for="Store">Store:</label>
+    <select name="Store" id="Store">
+        <option value="" selected="selected">Select Store</option>
+    </select>
+
+    <label for="Category">Category:</label>
+    <select name="Category" id="Category">
+        <option value="" selected> ALL</option>
+    </select>
 </form>
 
+<br/><br/>
 
+<div id="Database">
+    <form id="order" method="POST">
+        <table style="text-align: left;" id="ordertable">
+            <colgroup>
+                <col span="1" style="width: 70%;">
+                <col span="1" style="width: 30%;">
+            </colgroup>
+            <tr>
+                <th size="200px">Items</th>
+                <th size="200px">Quantity</th>
+            </tr>
+        </table>
+    </form>
 
-
-<form>
-    <div>
-        <label for="Chain">Chain:</label>
-        <select name="Chain" id="Chain">
-			<option value="0" selected = "selected">Select Chain</option>
-        </select>
-    </div>
-    <div>
-        <label for="Store">Store:</label>
-        <select name="Store" id="Store">
-            <option value="" selected = "selected">Select Store</option>
-        </select>
-    </div>
-</form>
-
-
-<form>
-    <div>
-        <label for="Category">Category:</label>
-        <select name="Category" id="Category">
-            <option value="" selected> NULL </option>
-        </select>
-    </div>
-</form>
-
-<div id = "Database">
 </div>
 
-<form>
+<br/><br/>
+<form action="/s3_home_customer">
     <input type="submit" value="Cancel Order"/>
-</form>
-
-
-<form>
-    <input type="submit" value="Place Order"/>
+    <input type="submit" value="Place Order" form="order"/>
 </form>
 
 <script charset="utf-8" type="text/javascript">
-var chainlist = JSON.parse({{ chainlist|tojson|safe }});
-console.log(chainlist)
-window.onload = function() {
-  var chaindrop = document.getElementById("Chain");
-  var storedrop = document.getElementById("Store");
-  for (var x in chainlist) {
-    chaindrop.options[chaindrop.options.length] = new Option(x, x);
-  }
-  chaindrop.onchange = function() {
-    //empty store dropdown
-    storedrop.length = 1;
-    //display correct values
-    var z = chainlist[chaindrop.value];
-    for (var i = 0; i < z.length; i++) {
-      storedrop.options[storedrop.options.length] = new Option(z[i], z[i]);
-    }
-  }
-};
-$(function () {
-	var dropdown = {
-		Chain: $('#Chain'),
-		Category: $('#Category')
-	};
+    var chainlist = JSON.parse({{ chainlist|tojson|safe }});
+    console.log(chainlist)
+    window.onload = function () {
+        var chaindrop = document.getElementById("Chain");
+        var storedrop = document.getElementById("Store");
+        for (var x in chainlist) {
+            chaindrop.options[chaindrop.options.length] = new Option(x, x);
+        }
+        chaindrop.onchange = function () {
+            //empty store dropdown
+            storedrop.length = 1;
+            //display correct values
+            var z = chainlist[chaindrop.value];
+            for (var i = 0; i < z.length; i++) {
+                storedrop.options[storedrop.options.length] = new Option(z[i], z[i]);
+            }
+        }
+    };
+    $(function () {
+        var dropdown = {
+            Chain: $('#Chain'),
+            Category: $('#Category')
+        };
 
-	function getcategory() {
-		var chain = dropdown.Chain.val();
-		dropdown.Chain.attr('disabled');
-	
-		<!-- if (chain !== "Chain") { -->
-			<!-- dropdown.Category.empty().append( -->
-				<!-- $('<option>', { -->
-					<!-- value: "0", -->
-					<!-- text: "NULL", -->
-					<!-- disabled: "disabled" -->
-				<!-- }) -->
-			<!-- ); -->
-		
-			$.post("{{ url_for('backend_api.s15_get_category') }}", {chain: chain}, function (data) {
-				console.log(data);
-				data.forEach(function (item) {
-					dropdown.Category.append(
-						$('<option>', {
-							value: item.itemtype,
-							text: item.itemtype
-						})
-					);
-				});
-				dropdown.Category.removeAttr('disabled');
-			});
-		};
-		
-		function getitems(){
-		var chain = dropdown.Chain.val();
-		var category = dropdown.Category.val();
-		dropdown.Chain.attr('disabled');
-		dropdown.Category.attr('disabled');
-		$.post("{{ url_for('backend_api.s15_get_items') }}", {chain: chain, category: category}, function (data) {
-			console.log(data);
-			document.getElementById("Database").innerHTML = "";
-			for (var item in data){
-				console.log(data[item].name)
+        function getcategory() {
+            var chain = dropdown.Chain.val();
+            dropdown.Chain.attr('disabled');
 
-				var label = document.createElement("label");
-				label.innerHTML = data[item].name;
-				
-				var select = document.createElement("select");
-				select.name = data[item].name;
-				select.id = data[item].name;
-				q = data[item].quantity;
-				for (var i = q; i >= 0; i--){
-					var option = document.createElement("option");
-					option.value = i;
-					option.text = i;
-					select.appendChild(option);
-				};
-				
-				var lineBreak = document.createElement('br');
 
-				document.getElementById("Database").appendChild(label).appendChild(select);
-			}
-			});
-		;}
-	// event listener to customer dropdown change
-		dropdown.Chain.on('change', function () {
-			getcategory();
-			getitems();
-		});
-		dropdown.Category.on('change', function () {
-			getitems();
-		});
-	<!-- }; -->
-});
+            $.post("{{ url_for('backend_api.s15_get_category') }}", {chain: chain}, function (data) {
+                console.log(data);
+                data.forEach(function (item) {
+                    dropdown.Category.append(
+                        $('<option>', {
+                            value: item.itemtype,
+                            text: item.itemtype
+                        })
+                    );
+                });
+                dropdown.Category.removeAttr('disabled');
+            });
+        }
+
+        function getitems() {
+            var chain = dropdown.Chain.val();
+            var category = dropdown.Category.val();
+            let divtable = document.getElementById("Database");
+            let ordertable = document.getElementById("ordertable");
+            console.log(ordertable)
+            dropdown.Chain.attr('disabled');
+            dropdown.Category.attr('disabled');
+            $.post("{{ url_for('backend_api.s15_get_items') }}", {chain: chain, category: category}, function (data) {
+                {#console.log(data);#}
+                divtable.innerHTML = "";
+                for (var item in data) {
+                    {#console.log(data[item].name)#}
+
+                    var label = document.createElement("label");
+                    label.innerHTML = data[item].name;
+
+                    var select = document.createElement("select");
+                    select.name = data[item].name;
+                    select.id = data[item].name;
+                    q = data[item].quantity;
+                    for (var i = 0; i <= q; i++) {
+                        var option = document.createElement("option");
+                        option.value = i;
+                        option.text = i;
+                        select.appendChild(option);
+                    }
+
+
+                    row = ordertable.insertRow(-1);
+                    cell1 = row.insertCell(0);
+                    cell2 = row.insertCell(1);
+
+                    cell1.appendChild(label);
+                    cell2.appendChild(select);
+                    {#console.log(ordertable);#}
+                }
+                divtable.appendChild(ordertable);
+            });
+
+        }
+
+        // event listener to customer dropdown change
+        dropdown.Chain.on('change', function () {
+            getcategory();
+            getitems();
+        });
+        dropdown.Category.on('change', function () {
+            getitems();
+        });
+        <!-- }; -->
+    });
 </script>
 
 </body>
