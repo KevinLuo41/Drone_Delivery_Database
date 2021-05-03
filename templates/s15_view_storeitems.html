@@ -110,6 +110,7 @@
             let divtable = document.getElementById("Database");
             let ordertable = document.getElementById("ordertable");
             console.log(ordertable)
+            $('table tr.temp').remove();
             dropdown.Chain.attr('disabled');
             dropdown.Category.attr('disabled');
             $.post("{{ url_for('backend_api.s15_get_items') }}", {chain: chain, category: category}, function (data) {
@@ -134,6 +135,7 @@
 
 
                     row = ordertable.insertRow(-1);
+                    row.classList.add("temp");
                     cell1 = row.insertCell(0);
                     cell2 = row.insertCell(1);
 
