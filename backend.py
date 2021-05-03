@@ -436,10 +436,19 @@ def s10_view_tech_filter():
 def s10_view_tech_assign():
     chain_name = get_chain_name()
     store_name = get_store_name(chain_name)
+    users = get_tech_and_store(chain_name)
 
     print(request.form)
-    return render_template("s10_view_tech.html")
-    # return redirect(url_for('frontend_api.s10_view_tech'))
+    for user, _, curr_loc in users:
+        re_loc = request.form[user]
+        print(re_loc)
+        if re_loc != curr_loc:
+            store_zip = get_zip(chain_name, re_loc)
+            set_tech_store(user, re_loc)
+            set_drone_zip(user, store_zip)
+
+    # return render_template("s10_view_tech.html")
+    return redirect(url_for('frontend_api.s10_view_tech'))
 
 def get_tech_and_store(chain_name, tech_name=None, store_name=None):
     conn = db.connect()
@@ -459,6 +468,32 @@ def get_tech_and_store(chain_name, tech_name=None, store_name=None):
         print(result_list)
         conn.close()
     return result_list
+
+def get_zip(chain_name, store_name):
+    conn = db.connect()
+    cur = conn.cursor()
+    result_list = []
+    cur.execute('SELECT Zipcode FROM grocery_drone_delivery.STORE where ChainName = %s AND StoreName = %s', [chain_name, store_name])
+    conn.commit()
+    result = cur.fetchall()
+    zipcode = result[0][0]
+    return zipcode
+
+def set_drone_zip(tech, zipcode):
+    conn = db.connect()
+    cur = conn.cursor()
+    result_list = []
+    cur.execute('UPDATE grocery_drone_delivery.DRONE SET Zip = %s WHERE DroneTech = %s', [zipcode, tech])
+    conn.commit()
+    conn.close()
+
+def set_tech_store(tech, store):
+    conn = db.connect()
+    cur = conn.cursor()
+    result_list = []
+    cur.execute('UPDATE grocery_drone_delivery.DRONE_TECH SET StoreName = %s WHERE Username = %s', [store, tech])
+    conn.commit()
+    conn.close()
 
 @backend_api.route('/s11_view_drone', methods=["POST"])
 def s11_view_drone():

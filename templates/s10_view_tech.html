@@ -63,7 +63,7 @@
                 <td>{{ row[1] }}</td>
                 <!-- <td>{{ row[2] }}</td> -->
                 <td>
-                    <select name="assign_loc" id="assign_loc">
+                    <select name="{{row[0]}}" id="assign_loc">
                         {% for item in locations %}
                         {% if item == row[2] %}
                         <option value="{{ item }}" selected>{{ item }}</option>
