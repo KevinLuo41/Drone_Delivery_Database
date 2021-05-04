@@ -527,9 +527,9 @@ FROM
     ORDERS o
         JOIN
     CUSTOMER c ON o.CustomerUsername = c.Username
-        JOIN
+        LEFT JOIN
     DRONE d ON o.DroneID = d.ID
-        JOIN
+        LEFT JOIN
     DRONE_TECH t ON d.DroneTech = t.Username
         JOIN
     CONTAINS n ON o.ID = n.OrderID

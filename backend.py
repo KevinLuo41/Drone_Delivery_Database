@@ -69,7 +69,7 @@ def s1_login_back():
         conn.commit()
         result = cur.fetchall()
         if not result:
-            flash('incorrect username or password')
+            flash('Incorrect username or password')
             return redirect(url_for('frontend_api.s1_login_front'))
         # print(result)
 
@@ -131,10 +131,10 @@ def s2_register_back():
     store = request.form['store']
 
     if len(password) < 8:
-        flash("password must contain at least 8 characters!!")
+        flash("Password must contain at least 8 characters!!")
         return redirect(url_for("frontend_api.s2_register_front"))
     if password != confirm:
-        flash("password and confirm password should be same!!")
+        flash("Password and confirm password should be same!!")
         return redirect(url_for("frontend_api.s2_register_front"))
 
     conn = db.connect()
@@ -146,7 +146,7 @@ def s2_register_back():
             cur.callproc('register_customer',
                          [username, password, fname, lname, street, city, state, zipcode, card, cvv, exp])
             conn.commit()
-            flash("register succeed!")
+            flash("Registration Succeed! Welcome Customer!")
             # conn.close()
             return redirect(url_for("frontend_api.s1_login_front"))
 
@@ -160,7 +160,7 @@ def s2_register_back():
                     cur.callproc('register_employee', [username, password, fname, lname, street, city, state, zipcode])
                     cur.execute("insert into drone_tech values(%s,%s,%s)", [username, store, chain])
                     conn.commit()
-                    flash("register succeed!")
+                    flash("Registration Succeed! Welcome drone tech!")
                     # conn.close()
                     return redirect(url_for("frontend_api.s1_login_front"))
             else:
@@ -173,13 +173,12 @@ def s2_register_back():
                     cur.callproc('register_employee', [username, password, fname, lname, street, city, state, zipcode])
                     cur.execute("insert into manager values(%s,%s)", [username, chain])
                     conn.commit()
-                    flash("register succeed!")
+                    flash("Registration Succeed! Welcome Manager!")
                     # conn.close()
                     return redirect(url_for("frontend_api.s1_login_front"))
 
     except Exception as e:
         print(e)
-        # flash(e)
         return redirect(url_for("frontend_api.s2_register_front"))
     finally:
         conn.close()
@@ -196,7 +195,7 @@ def s4_create_chain_back():
         conn.commit()
         flash("Chain Creation Succeed!!")
     except Exception as e:
-        print(e)
+        flash("Incorrect chain name or chain name already exists!")
         return Response(status=500)
     finally:
         data = s5_front_helper()
@@ -223,7 +222,7 @@ def s5_create_store_back():
         conn.commit()
         flash("Store Creation Succeed!")
     except Exception as e:
-        flash(e)
+        flash(str(e))
         print(e)
         return Response(status=500)
     finally:
@@ -253,10 +252,14 @@ def s5_front_helper():
 @backend_api.route('/s6_create_drone', methods=["POST"])
 def s6_create_drone_back():
     print(request.form)
-    id = request.form['drone-id']
-    zipcode = request.form['zipcode']
-    radius = request.form['radius']
-    tech = request.form['tech']
+    try:
+        id = request.form['drone-id']
+        zipcode = request.form['zipcode']
+        radius = request.form['radius']
+        tech = request.form['tech']
+    except Exception as e:
+        flash("All fields are required")
+        return redirect(url_for('frontend_api.s6_create_drone_front'))
 
     conn = db.connect()
     cur = conn.cursor()
@@ -265,9 +268,9 @@ def s6_create_drone_back():
         conn.commit()
         flash("Drone Creation Succeed!")
     except Exception as e:
-        # flash(e)
+        flash(str(e))
         print(e)
-        return Response(status=500)
+        return redirect(url_for('frontend_api.s6_create_drone_front'))
     finally:
         cur.execute('select * from drone')
         conn.commit()
@@ -311,6 +314,28 @@ def s6_front_helper2():
     return jsonify(data)
 
 
+@backend_api.route('/s7_create_item', methods=["POST"])
+def s7_create_item_back():
+    print(request.form)
+    item_name = request.form['Name']
+    item_type = request.form['Type']
+    item_organic = request.form['Organic']
+    item_origin = request.form['Origin']
+    conn = db.connect()
+    cur = conn.cursor()
+    try:
+        cur.callproc('admin_create_item', [item_name, item_type, item_organic, item_origin])
+        conn.commit()
+        flash("Item Creation Succeed!!")
+        return redirect(url_for('frontend_api.s3_home_admin_front'))
+    except Exception as e:
+        print(e)
+        flash(str(e))
+        return redirect(url_for('frontend_api.s7_create_item_front'))
+    finally:
+        conn.close()
+
+
 @backend_api.route('/s8_view_customers', methods=["POST"])
 def s8_admin_view_customers():
     print(request.form)
@@ -338,32 +363,6 @@ def s8_admin_view_customers():
         print(result_list)
         conn.close()
     return render_template("s8_view_customers.html", result=result_list, fname=firstname, lname=lastname)
-
-
-@backend_api.route('/s7_create_item', methods=["POST"])
-def s7_create_item_back():
-    print(request.form)
-    item_name = request.form['Name']
-    item_type = request.form['Type']
-    item_organic = request.form['Organic']
-    item_origin = request.form['Origin']
-    conn = db.connect()
-    cur = conn.cursor()
-    try:
-        cur.callproc('admin_create_item', [item_name, item_type, item_organic, item_origin])
-        conn.commit()
-        flash("Item Creation Succeed!!")
-    except Exception as e:
-        print(e)
-        return Response(status=500)
-    finally:
-        cur.execute('select * from item')
-        conn.commit()
-        result = cur.fetchall()
-        print(result)
-        conn.close()
-        return redirect(url_for('frontend_api.s3_home_admin_front'))
-
 
 def s9_front_helper():
     conn = db.connect()
@@ -408,16 +407,15 @@ def s9_create_chainitem_back():
         cur.callproc('manager_create_chain_item', [chain_name, item_name, quantity, order_limit, PLU, price])
         conn.commit()
         flash("Chain Item Creation Succeed!!")
+        return redirect(url_for('frontend_api.s3_home_manager_front'))
     except Exception as e:
         print(e)
-        return Response(status=500)
+        flash(str(e))
+        return redirect(url_for('frontend_api.s9_create_chainitem'))
+
     finally:
-        cur.execute('select * from chain_item')
-        conn.commit()
-        result = cur.fetchall()
-        print(result)
         conn.close()
-        return redirect(url_for('frontend_api.s3_home_admin_front'))
+
 
 
 @backend_api.route('/s10_view_tech/filter', methods=["POST"])
@@ -661,11 +659,11 @@ def s14_view_orderhistory():
         cur.execute("select * from customer_view_order_history_result")
         row_headers = [x[0] for x in cur.description]
         result = cur.fetchall()
-        # print(result)
+        print(result)
         dict_data = dict(zip(row_headers, list(map(str, result[0]))))
         # return redirect(url_for('frontend_api.s3_home_admin_front'))
         print(dict_data)
-    print(ids, id)
+    # print(ids, id)
     return render_template("s14_view_orderhistory.html", username=username, ids=ids, id=id, data=dict_data)
 
 

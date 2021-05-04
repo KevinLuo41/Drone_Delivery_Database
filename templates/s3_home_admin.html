@@ -14,16 +14,15 @@
 
 <div>
     {% with messages = get_flashed_messages(with_categories=True) %}
-    {% if messages %}
-    {% for category, message in messages %}
-    <h2 style="color: red;">{{message}}</h2>
-    {% endfor %}
-    {% endif %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <h2 style="color: red;">{{ message }}</h2>
+            {% endfor %}
+        {% endif %}
     {% endwith %}
 
     {% block body %}{% endblock %}
 </div>
-
 
 
 <form action="/s7_create_item" method="GET">
@@ -31,7 +30,7 @@
 </form>
 
 <form action="/s6_create_drone" method="GET">
-    <input type="submit" value="Create Drone" />
+    <input type="submit" value="Create Drone"/>
 </form>
 
 <form action="/s8_view_customers" method="GET">
@@ -44,7 +43,7 @@
 </form>
 
 <form action="/s5_create_store" method="GET">
-    <input type="submit" value="Create Store" />
+    <input type="submit" value="Create Store"/>
 </form>
 
 <div>

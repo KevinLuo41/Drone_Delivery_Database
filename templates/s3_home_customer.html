@@ -14,11 +14,11 @@
 <h1> Customer Home</h1>
 <div>
     {% with messages = get_flashed_messages(with_categories=True) %}
-    {% if messages %}
-    {% for category, message in messages %}
-    <h2 style="color: red;">{{message}}</h2>
-    {% endfor %}
-    {% endif %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <h2 style="color: red;">{{ message }}</h2>
+            {% endfor %}
+        {% endif %}
     {% endwith %}
 
     {% block body %}{% endblock %}
@@ -38,9 +38,9 @@
     <form action="/s14_view_orderhistory" method="GET">
         <input type="submit" value="View Order History"/>
     </form>
-	<form action="/s15_view_storeitems" method="GET">
-		<input type="submit" value="View Store Items"/>
-	</form>
+    <form action="/s15_view_storeitems" method="GET">
+        <input type="submit" value="View Store Items"/>
+    </form>
 </div>
 
 </body>

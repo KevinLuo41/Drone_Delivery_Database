@@ -10,7 +10,17 @@
 <body>
 
 <h1>Admin Create Drone</h1>
+<div>
+    {% with messages = get_flashed_messages(with_categories=True) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <h2 style="color: red;">{{ message }}</h2>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
 
+    {% block body %}{% endblock %}
+</div>
 
 <form action="/s6_create_drone" id="drone-info" method="POST">
 
@@ -20,7 +30,7 @@
     </div>
     <div>
         <label for="zipcode">Affiliated Grocery Code:</label>
-        <select name="zipcode" id="zipcode">
+        <select name="zipcode" id="zipcode" required>
             <option value="0" selected disabled>zipcode</option>
             {% for zip in ziplist %}
                 <option value="{{ zip }}">{{ zip }}</option>
@@ -30,13 +40,13 @@
     </div>
     <div>
         <label for="radius"> Travel Radius:</label>
-        <input type="text" name="radius" id="radius" required/>
+        <input type="text" name="radius" id="radius" pattern="[0-9]+" required/>
     </div>
 
 
     <div>
         <label for="status">Status:</label>
-        <select name="status" id="status">
+        <select name="status" id="status" required>
             <option value="0" selected disabled>Available</option>
 
         </select>
@@ -44,7 +54,7 @@
 
     <div>
         <label for="tech">Store Associate:</label>
-        <select name="tech" id="tech">
+        <select name="tech" id="tech" required>
             <option value="0" selected disabled>Employee</option>
         </select>
 
@@ -102,7 +112,7 @@
 
 <form action="/s3_home_admin" method="GET">
     <input type="submit" value="Back"/>
-    <input type="submit" form = "drone-info" value="Create"/>
+    <input type="submit" form="drone-info" value="Create"/>
 </form>
 </body>
 

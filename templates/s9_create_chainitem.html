@@ -12,7 +12,17 @@
 <body>
 <h1> Chain Manager Create Chain Item </h1>
 
+<div>
+    {% with messages = get_flashed_messages(with_categories=True) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <h2 style="color: red;">{{ message }}</h2>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
 
+    {% block body %}{% endblock %}
+</div>
 
 
 <form action="/s9_create_chainitem" method="POST">
@@ -20,37 +30,39 @@
         <label for="Chain Name">Chain Name:</label>
         <input type="text" name="Chain Name" id="Chain Name" value={{ chain_name }} /readonly>
     </div>
-	<div>
+    <div>
         <label for="Item">Item:</label>
         <select name="Item" id="Item">
             <!-- <option value="Navel Orange" selected disabled>Navel Orange</option> -->
-			{% for item in item_list %}
+            {% for item in item_list %}
                 <option value="{{ item }}">{{ item }}</option>
             {% endfor %}
         </select>
     </div>
-	<div>
+    <div>
         <label for="Quantity Available">Quantity Available:</label>
-        <input type="text" name="Quantity Available" id="Quantity Available" placeholder="500" required/>
+        <input type="text" name="Quantity Available" id="Quantity Available" placeholder="500" pattern="[0-9]+"
+               required/>
     </div>
-	<div>
+    <div>
         <label for="Limit Per Order">Limit Per Order:</label>
-        <input type="text" name="Limit Per Order" id="Limit Per Order" placeholder="20" required/>
+        <input type="text" name="Limit Per Order" id="Limit Per Order" placeholder="20" pattern="[0-9]+" required/>
     </div>
-	<div>
+    <div>
         <label for="PLU Number">PLU Number:</label>
         <input type="text" name="PLU Number" id="PLU Number" value={{ new_PLU }} /readonly>
     </div>
     <div>
-        <label for="Price per Unit">Price per Unit         $:</label>
-        <input type="text" name="Price per Unit" id="Price per Unit" placeholder="0.88" required/>
+        <label for="Price per Unit">Price per Unit $:</label>
+        <input type="text" name="Price per Unit" id="Price per Unit" placeholder="0.88" pattern="^[0-9]*\.[0-9][0-9]$"
+               required/>
     </div>
-	<input type="submit" value="Create"/>
-	
+    <input type="submit" value="Create"/>
+
 </form>
 
-<form action = "/s3_home_manager" method ="GET">
-    <input type="submit" value="Back" />
+<form action="/s3_home_manager" method="GET">
+    <input type="submit" value="Back"/>
 </form>
 
 

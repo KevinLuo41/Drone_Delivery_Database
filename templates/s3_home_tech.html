@@ -11,7 +11,17 @@
 
 <body>
 <h1> Drone Technician Home</h1>
+<div>
+    {% with messages = get_flashed_messages(with_categories=True) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <h2 style="color: red;">{{ message }}</h2>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
 
+    {% block body %}{% endblock %}
+</div>
 
 <form action="/s17_tech_vieworders" method="GET">
     <input type="submit" value="View Store Order"/>

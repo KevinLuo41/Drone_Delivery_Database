@@ -11,36 +11,46 @@
 </style>
 
 <body>
-    <h1> Chain Manager Home </h1>
+<h1> Chain Manager Home </h1>
+<div>
+    {% with messages = get_flashed_messages(with_categories=True) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <h2 style="color: red;">{{ message }}</h2>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
 
+    {% block body %}{% endblock %}
+</div>
 
-    <div>
-        <form action="/s10_view_tech" method="GET">
-            <input type="submit" value="View Drone Technicians">
-        </form>
-    </div>
+<div>
+    <form action="/s10_view_tech" method="GET">
+        <input type="submit" value="View Drone Technicians">
+    </form>
+</div>
 
-    <div>
-        <form action="/s11_view_drone" method="GET">
-            <input type="submit" value="View Drones">
-        </form>
-    </div>
+<div>
+    <form action="/s11_view_drone" method="GET">
+        <input type="submit" value="View Drones">
+    </form>
+</div>
 
-    <div>
-        <form action="s9_create_chainitem">
-            <input type="submit" value="Create Chain Item">
-        </form>
-    </div>
+<div>
+    <form action="s9_create_chainitem">
+        <input type="submit" value="Create Chain Item">
+    </form>
+</div>
 
-    <div>
-        <form action="/s12_manage_store" method="GET">
-            <input type="submit" value="Manager Stores">
-        </form>
-    </div>
+<div>
+    <form action="/s12_manage_store" method="GET">
+        <input type="submit" value="Manager Stores">
+    </form>
+</div>
 
-    <div>
-        <a href="/"> Logout </a>
-    </div>
+<div>
+    <a href="/"> Logout </a>
+</div>
 
 </body>
 
