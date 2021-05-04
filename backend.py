@@ -771,7 +771,7 @@ def s15_place_order():
                 conn.commit()
             except Exception as e:
                 print(e)
-                flash("Fail to place order. Your credit card might expire.")
+                flash('Fail to place order. If your credit card expired, please proceed to "Change Credit Card Info"; or if you were creating an order, please proceed to "Review Order"')
                 return redirect(url_for("frontend_api.s3_home_customer_front"))
             finally:
                 conn.close()
