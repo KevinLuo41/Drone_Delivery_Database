@@ -238,7 +238,11 @@ CREATE PROCEDURE manager_create_chain_item(
 )
 BEGIN
 -- Type solution below
-INSERT INTO CHAIN_ITEM VALUES (i_item_name, i_chain_name, i_PLU_number, i_order_limit, i_quantity, i_price);
+IF NOT EXISTS(SELECT PLUNumber FROM chain_item WHERE ChainItemName = i_item_name AND ChainName = i_chain_name) THEN
+	INSERT INTO CHAIN_ITEM VALUES (i_item_name, i_chain_name, i_PLU_number, i_order_limit, i_quantity, i_price);
+ELSE
+	SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Duplicated chain item pair.';
+END IF;
 -- End of solution
 END //
 DELIMITER ;
