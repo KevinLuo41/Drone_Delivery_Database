@@ -3,6 +3,7 @@
 <head>
     <title> Customer Review Order </title>
 </head>
+<script src="/static/jquery.js"></script>
 <style>
     h1 {
         text-align: left;
@@ -20,7 +21,7 @@
 <input type="text" name="Store" id="Store" value={{ store }} disabled/>
 
 <form id="update" action="/s16_place_order" method="POST">
-    <table style="text-align: left;">
+    <table id = "table" style="text-align: left;">
         <tr>
             <th style="width:200px">Items</th>
             <th style="width:200px">Quantity</th>
@@ -34,9 +35,9 @@
                     {{ i[0] }}
                     <input type="hidden" name="item" id="item" value="{{ i[0] }}">
                 </td>
-                <td>
+                <td id = "quantity {{ i[0] }}">
                     <label for="update"></label>
-                    <select name="update" id="update">
+                    <select name="update{{ i[0] }}" id="update {{ i[0] }}">
                         {% for num in range( i[2]|int ) %}
                             {% if num == i[1]|int %}
                                 <option value="{{ num }}" selected>{{ num }}</option>
@@ -58,11 +59,40 @@
     </table>
 	<input type="submit" value="Place Order" form="update"/>
 </form>
-<!-- <script charset="utf-8" type="text/javascript"> -->
-	<!-- <!-- var items = JSON.parse({{ items|tojson|safe }}); --> 
-	<!-- var unitcost = document.getElementById( "unitcost" ).text; -->
-	<!-- console.log(unitcost) -->
-<!-- </script> -->
+<script charset="utf-8" type="text/javascript">
+	var items = JSON.parse('{{ items|tojson|safe }}'); 
+	function gettotal() {
+		var total = 0;
+		var row = document.getElementById("Total");
+		if (row !== null){
+			row.parentNode.removeChild(row);};
+		
+		for (i in items){
+			var s1 = items[i][0];
+			var s2 = "update "
+			var new_id = s2.concat(s1);
+			var q = document.getElementById(new_id).value
+			total = total + q * parseFloat(items[i][3]);
+		};
+		var t = document.createElement("tr");
+		var d1 = document.createElement("td");
+		var d2 = document.createElement("td");
+		var Text = document.createTextNode("Total: "+total.toFixed(2));
+		t.id = "Total";
+		t.style.fontWeight = "900";
+		t.appendChild(Text);
+		table = document.getElementById("table").appendChild(t)
+		};
+	gettotal();
+	console.log(items)
+	for (i in items){
+		var s1 = items[i][0];
+		var s2 = "quantity "
+		var new_id = s2.concat(s1);
+		document.getElementById(new_id).addEventListener("change", function() {gettotal();});
+		};
+	
+</script>
 
 <form action="/s3_home_customer">
     <input type="submit" value="Back"/>
