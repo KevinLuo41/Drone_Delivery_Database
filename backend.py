@@ -723,20 +723,30 @@ def s15_get_category():
 @backend_api.route('/s15_get_items', methods=["POST"])
 def s15_get_items():
     chain = request.form["chain"]
+    print(chain)
+    store = request.form["store"]
+    print(store)
     category = request.form["category"]
+    print(category)
     conn = db.connect()
     cur = conn.cursor()
-    if category == "":
-        cur.execute('select ChainItemName, Orderlimit from chain_item as ci where ci.ChainName = %s', [chain])
-    else:
-        cur.execute(
-            'select ChainItemName, Orderlimit from chain_item as ci, item as i where ci.chainitemname = i.itemname and ci.ChainName = %s and i.itemtype = %s',
-            [chain, category])
-    conn.commit()
-
-    result = cur.fetchall()
-    data = [{"name": x[0], "quantity": x[1]} for x in result]
-    print(data)
+    
+    try:
+        if category == "" or category == None:
+            cur.callproc('customer_view_store_items', [config.USERNAME,chain,store,"ALL"])
+        else:
+            cur.callproc('customer_view_store_items', [config.USERNAME,chain,store,category])
+        conn.commit()
+    except Exception as e:
+        # flash(e)
+        print(e)
+        return Response(status=500)
+    finally:
+        cur.execute('select * from customer_view_store_items_result')
+        conn.commit()
+        result = cur.fetchall()
+        data = [{"name": x[0], "quantity": x[1]} for x in result]
+        conn.close()
     return jsonify(data)
 
 
@@ -759,10 +769,10 @@ def s15_place_order():
             try:
                 cur.callproc('customer_select_items', [username, chain, store, item, int(quant)])
                 conn.commit()
-
             except Exception as e:
                 print(e)
-                redirect(url_for("frontend_api.s3_home_customer_front"))
+                flash("Fail to place order. Your credit card might expire.")
+                return redirect(url_for("frontend_api.s3_home_customer_front"))
             finally:
                 conn.close()
 

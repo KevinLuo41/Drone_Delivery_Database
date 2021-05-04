@@ -85,6 +85,7 @@
     $(function () {
         var dropdown = {
             Chain: $('#Chain'),
+			Store: $('#Store'),
             Category: $('#Category')
         };
 
@@ -109,14 +110,16 @@
 
         function getitems() {
             var chain = dropdown.Chain.val();
+			var store = dropdown.Store.val();
             var category = dropdown.Category.val();
             let divtable = document.getElementById("Database");
             let ordertable = document.getElementById("ordertable");
             console.log(ordertable)
             $('table tr.temp').remove();
             dropdown.Chain.attr('disabled');
+			dropdown.Store.attr('disabled');
             dropdown.Category.attr('disabled');
-            $.post("{{ url_for('backend_api.s15_get_items') }}", {chain: chain, category: category}, function (data) {
+            $.post("{{ url_for('backend_api.s15_get_items') }}", {chain: chain, store:store, category: category}, function (data) {
                 {#console.log(data);#}
                 divtable.innerHTML = "";
                 for (var item in data) {
@@ -154,6 +157,8 @@
         // event listener to customer dropdown change
         dropdown.Chain.on('change', function () {
             getcategory();
+        });
+		dropdown.Store.on('change', function () {
             getitems();
         });
         dropdown.Category.on('change', function () {
