@@ -27,9 +27,9 @@ For the backend, we used flask as framework. Flask has built-in package called "
 For the frontend, we use plain html + js to achieve basic function. No UI design due to limited time. 
 
 ## Distribution of works
-Kaiwen Luo, Wen Li, Maiqi Ding: Backend
+Kaiwen Luo, Wen Li, Maiqi Ding: Backend and some Frontend
 
-Zexing Song: Frontend
+Zexing Song: Majority Frontend
 
 
 
