@@ -835,30 +835,29 @@ def s16_place_order():
     orders = request.form.to_dict(flat=False)
     updates = dict(zip(orders["item"],orders['update']))
     print(updates)
-
+    conn = db.connect()
+    cur = conn.cursor()
+    
     exp = s16_get_exp(username)
     curdate = datetime.today().date()
+                    
     if exp<curdate:
         flash("card expired, change a card to continue")
         return redirect(url_for("frontend_api.s3_home_customer_front"))
     else:
-        conn = db.connect()
-        cur = conn.cursor()
-        for item, quant in updates.items():
-            print(item, ":", quant)
-            try:
+        try:
+            for item, quant in updates.items():
+                print(item, ":", quant)
                 cur.callproc('customer_update_order', [username, item, int(quant)])
                 conn.commit()
-
-            except Exception as e:
-                print(e)
-                return redirect(url_for("frontend_api.s3_home_customer_front"))
-
-        cur.execute("UPDATE orders SET OrderStatus = 'Pending' "
-                    "WHERE OrderStatus = 'Creating' AND CustomerUsername = %s",[username])
-        conn.commit()
-        conn.close()
-
+        except Exception as e:
+            print(e)
+            return redirect(url_for("frontend_api.s3_home_customer_front"))
+        finally:
+            cur.execute("UPDATE orders SET OrderStatus = 'Pending' "
+                        "WHERE OrderStatus = 'Creating' AND CustomerUsername = %s",[username])
+            conn.commit()
+            conn.close()
     flash("Your order has been received!")
     return  redirect(url_for("frontend_api.s3_home_customer_front"))
 
@@ -869,6 +868,27 @@ def s16_get_exp(username):
     exp = cur.fetchall()[0][0]
     print(exp)
     return exp
+
+# @backend_api.route('/s16_back', methods=['POST'])
+# def s16_back():
+#     username = config.USERNAME
+#     conn = db.connect()
+#     cur = conn.cursor()
+#     try:
+#         cur.execute("SELECT ID FROM orders WHERE OrderStatus = 'Creating' AND CustomerUsername = %s", [username])
+#         conn.commit()
+#         orderid = cur.fetchall()[0][0]
+#         cur.execute("DELETE FROM contains WHERE OrderID = %s", [orderid])
+#         conn.commit()
+#         cur.execute("DELETE FROM orders WHERE ID = %s", [orderid])
+#         conn.commit()
+        
+#     except Exception as e:
+#         print(e)
+#         return redirect(url_for("frontend_api.s3_home_customer_front"))
+#     finally:
+#         conn.close()
+#     return redirect(url_for("frontend_api.s3_home_customer_front"))
 
 @backend_api.route('/s17_tech_vieworders', methods=['POST'])
 def s17_tech_vieworders_back():

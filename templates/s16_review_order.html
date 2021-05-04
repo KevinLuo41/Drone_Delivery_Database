@@ -32,10 +32,10 @@
 
                 <td>
                     {{ i[0] }}
-                    <input type="hidden" name="item" id="item" value={{ i[0] }}>
+                    <input type="hidden" name="item" id="item" value="{{ i[0] }}">
                 </td>
                 <td>
-                    <label for="update">Status:</label>
+                    <label for="update"></label>
                     <select name="update" id="update">
                         {% for num in range( i[2]|int ) %}
                             {% if num == i[1]|int %}
@@ -56,13 +56,16 @@
         {% endfor %}
 
     </table>
+	<input type="submit" value="Place Order" form="update"/>
 </form>
-
+<!-- <script charset="utf-8" type="text/javascript"> -->
+	<!-- <!-- var items = JSON.parse({{ items|tojson|safe }}); --> 
+	<!-- var unitcost = document.getElementById( "unitcost" ).text; -->
+	<!-- console.log(unitcost) -->
+<!-- </script> -->
 
 <form action="/s3_home_customer">
     <input type="submit" value="Back"/>
-
-    <input type="submit" value="Place Order" form="update"/>
 </form>
 
 

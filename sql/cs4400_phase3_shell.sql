@@ -747,6 +747,7 @@ WHERE
     SET Quantity = i_quantity
     WHERE OrderID = (SELECT ID FROM orders WHERE OrderStatus = 'Creating' AND CustomerUsername = i_username) 
     AND ItemName = i_item_name;
+    
     DELETE FROM `contains` 
     WHERE Quantity = 0 
     AND OrderID = (SELECT ID FROM orders WHERE OrderStatus = 'Creating' AND CustomerUsername = i_username);
@@ -754,10 +755,11 @@ WHERE
     INSERT INTO chain_item
 	SELECT ci.ChainItemName, ci.ChainName, ci.PLUNumber, ci.Orderlimit, ci.Quantity, ci.Price
     FROM chain_item as ci
-    INNER JOIN
-    (SELECT ItemName, ChainName, Quantity FROM `contains` WHERE OrderID = (SELECT ID FROM orders WHERE OrderStatus = 'Creating' AND CustomerUsername = i_username)) as c
-    ON ci.ChainItemName = c.ItemName AND ci.ChainName = c.ChainName
-    ON DUPLICATE KEY UPDATE `Quantity` = (ci.Quantity - c.Quantity);
+    WHERE ci.ChainItemName = i_item_name AND ci.ChainName = (SELECT distinct(ChainName) FROM contains WHERE OrderID = (SELECT ID FROM orders WHERE OrderStatus = 'Creating' AND CustomerUsername = i_username))
+--     INNER JOIN
+--    (SELECT ItemName, ChainName, Quantity FROM `contains` WHERE OrderID = (SELECT ID FROM orders WHERE OrderStatus = 'Creating' AND CustomerUsername = i_username)) as c
+--    ON ci.ChainItemName = c.ItemName AND ci.ChainName = c.ChainName
+    ON DUPLICATE KEY UPDATE `Quantity` = (ci.Quantity - i_quantity);
     
 -- 	UPDATE orders
 -- 	SET OrderStatus = 'Pending'
