@@ -867,27 +867,28 @@ def s17_tech_vieworders_back():
     syear = request.form["syear"]
     smonth = request.form["smonth"]
     sday = request.form["sday"]
+
     eyear = request.form["eyear"]
     emonth = request.form["emonth"]
     eday = request.form["eday"]
-    # print(request.form)
+    print(request.form)
+
 
     if syear and smonth and sday:
-        # print(syear,smonth,sday)
         sdate = syear + "-" + smonth + "-" + sday
-    elif (not syear and not smonth and not sday):
+    elif (not syear) and (not smonth) and (not sday):
         sdate = None
     else:
         flash("Incorrect date format")
-        return redirect(url_for("frontend_api.s17_tech_vieworders_back"))
+        return redirect(url_for("frontend_api.s17_tech_vieworders_front"))
 
     if eyear and emonth and eday:
         edate = eyear + "-" + emonth + "-" + eday
-    elif (not syear and not smonth and not sday):
+    elif (not eyear) and (not emonth) and (not eday):
         edate = None
     else:
         flash("Incorrect date format")
-        return redirect(url_for("frontend_api.s17_tech_vieworders_back"))
+        return redirect(url_for("frontend_api.s17_tech_vieworders_front"))
 
     conn = db.connect()
     cur = conn.cursor()
@@ -943,9 +944,12 @@ def get_drone(username):
 @backend_api.route('/s17_assgin_drone', methods=['POST'])
 def s17_assgin_drone_back():
     username = config.USERNAME
-    oid = request.form["oid"]
-    operator = request.form["operator"]
-    did = request.form["did"]
+    try:
+        oid = request.form["oid"]
+        operator = request.form["operator"]
+        did = request.form["did"]
+    except:
+        return redirect(url_for("frontend_api.s17_tech_vieworders_front"))
 
     # print(request.form)
 

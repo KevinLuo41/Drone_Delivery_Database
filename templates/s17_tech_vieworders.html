@@ -26,28 +26,28 @@
 <form action="/s17_tech_vieworders" method="POST">
     <span> Dates:
         <label for="smonth"></label>
-        <input type="text" name="smonth" id="smonth" pattern="[0-9]+" placeholder="MM"
+        <input type="text" name="smonth" id="smonth" pattern="[0-9]{2}" placeholder="MM"
                maxlength="2" size="3"/>
         <span>/</span>
                 <label for="sday"></label>
-        <input type="text" name="sday" id="sday" pattern="[0-9]+" placeholder="DD"
+        <input type="text" name="sday" id="sday" pattern="[0-9]{2}" placeholder="DD"
                maxlength="2" size="3"/>
         <span>/</span>
         <label for="syear"></label>
-        <input type="text" name="syear" id="syear" pattern="[0-9]+" placeholder="YYYY"
+        <input type="text" name="syear" id="syear" pattern="[0-9]{4}" placeholder="YYYY"
                maxlength="4" size="5"/>
 
         <span> -- </span>
                 <label for="emonth"></label>
-        <input type="text" name="emonth" id="emonth" pattern="[0-9]+" placeholder="MM"
+        <input type="text" name="emonth" id="emonth" pattern="[0-9]{2}" placeholder="MM"
                maxlength="2" size="3"/>
         <span>/</span>
                 <label for="eday"></label>
-        <input type="text" name="eday" id="eday" pattern="[0-9]+" placeholder="DD"
+        <input type="text" name="eday" id="eday" pattern="[0-9]{2}" placeholder="DD"
                maxlength="2" size="3"/>
         <span>/</span>
         <label for="syear"></label>
-        <input type="text" name="eyear" id="eyear" pattern="[0-9]" placeholder="YYYY"
+        <input type="text" name="eyear" id="eyear" pattern="[0-9]{4}" placeholder="YYYY"
                maxlength="4" size="5"/>
     </span>
 
@@ -60,7 +60,7 @@
 </form>
 
 <form id="assign" method="POST">
-    <table>
+    <table style="width:600px; text-align: left;border-spacing: 5px;">
         <tr>
             <th>ID</th>
             <th>Operator</th>

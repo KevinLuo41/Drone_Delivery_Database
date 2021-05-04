@@ -19,11 +19,11 @@
     <form action="/s11_view_drone" method="POST">
         <div>
             <label for="Drone ID">Drone ID:</label>
-            <input type="text" name="drone_id" id="Drone ID" oninput="value=value.replace(/[^\d]/g,'')" {% if id %}value={{id}}
+            <input type="text" name="drone_id" id="Drone ID" pattern="[0-9]+" oninput="value=value.replace(/[^\d]/g,'')" {% if id %}value={{id}}
             {% endif %}/>
 
             <label for="Radius">Radius:</label>
-            <input type="text" name="radius" id="Radius" oninput="value=value.replace(/[^\d]/g,'')" {% if r %}value={{r}}
+            <input type="text" name="radius" id="Radius" pattern="[0-9]+" oninput="value=value.replace(/[^\d]/g,'')" {% if r %}value={{r}}
             {% endif %}/>
 
             <input type="submit" value="Filter" />
@@ -31,7 +31,7 @@
     </form>
 
     {% if result %}
-    <table>
+    <table style="width:600px; text-align: left;border-spacing: 5px;">
         <tr>
             <th>Drone ID</th>
             <th>Operator</th>

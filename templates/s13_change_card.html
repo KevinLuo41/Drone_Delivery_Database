@@ -32,18 +32,18 @@
     <div>
         <label for="Credit Card Number:">Credit Card Number</label>
         <input type="text" name="card_number" oninput="value=value.replace(/[^\d]/g,'')" id="card_number"
-               placeholder="xxxx xxxx xxxx xxxx" required>
+               placeholder="xxxx xxxx xxxx xxxx" pattern="[0-9]{16}" required>
     </div>
     <div>
         <label for="Security Code:">Security Code</label>
-        <input type="text" name="cvv" id="cvv" size="4" oninput="value=value.replace(/[^\d]/g,'')"
+        <input type="text" name="cvv" id="cvv" size="4" pattern="[0-9]{3}" oninput="value=value.replace(/[^\d]/g,'')"
                placeholder="xxx" required>
     </div>
     <div>
         <label for="Expiration Date:">Expiration Date</label>
-        <input type="date" name="month" id="month" placeholder="mm" size="3" required>
+        <input type="date" name="month" id="month" placeholder="mm" pattern="[0-9]{2}" size="3" required>
         <span>/</span>
-        <input type="date" name="year" id="year" placeholder="yyyy" size="5" required>
+        <input type="date" name="year" id="year" placeholder="yyyy" pattern="[0-9]{4}"  size="5" required>
     </div>
 
     <input type="submit" value="Approve" onclick="return check();">
