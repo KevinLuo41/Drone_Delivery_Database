@@ -8,8 +8,14 @@ pip install flask
 
 ## Run
 Direct to project folder.
-``` cd XXX/Database_Project ```
-``` python server.py```
+
+``` 
+cd XXX/Database_Project 
+```
+
+``` 
+python server.py
+```
 Go to  http://127.0.0.1:5000/ flask default server url.
 
 Everything all set!
