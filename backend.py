@@ -799,7 +799,7 @@ def s16_review_order_back(chain,store):
             list_data = list(map(str, re))
             items.append(list_data)
         # print(list_data)
-
+        print(items)
     except Exception as e:
         print(e)
         redirect(url_for("frontend_api.s3_home_customer_front"))
@@ -882,7 +882,7 @@ def s16_get_exp(username):
 #         conn.commit()
 #         cur.execute("DELETE FROM orders WHERE ID = %s", [orderid])
 #         conn.commit()
-        
+
 #     except Exception as e:
 #         print(e)
 #         return redirect(url_for("frontend_api.s3_home_customer_front"))

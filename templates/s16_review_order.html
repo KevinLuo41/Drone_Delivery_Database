@@ -38,7 +38,7 @@
                 <td id = "quantity {{ i[0] }}">
                     <label for="update"></label>
                     <select name="update" id="update {{ i[0] }}">
-                        {% for num in range( i[2]|int ) %}
+                        {% for num in range( (i[2]|int)+1 ) %}
                             {% if num == i[1]|int %}
                                 <option value="{{ num }}" selected>{{ num }}</option>
                             {% else %}
